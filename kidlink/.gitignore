@@ -1,0 +1,38 @@
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# SQLite database
+db.sqlite3
+
+# Local Django settings
+kidlink/settings.py
+.env
+
+# Django migrations
+*/migrations/*.py
+*/migrations/*.pyc
+*/migrations/__pycache__/
+
+# Virtual environment
+venv/
+ENV/
+env/
+.venv/
+
+# IDE / Editor files
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Static files collected by collectstatic
+staticfiles/
+
+# Media uploads (optional, if you have a media folder)
+media/
