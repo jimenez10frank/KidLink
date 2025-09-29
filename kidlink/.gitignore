@@ -12,7 +12,7 @@ kidlink/settings.py
 
 # Django migrations
 */migrations/*.py
-*/migrations/*.pyc
+*/mdigrations/*.pyc
 */migrations/__pycache__/
 
 # Virtual environment
