@@ -1,0 +1,27 @@
+<h1>Activities for {{ youth.first_name }} {{ youth.last_name }}</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Activity</th>
+      <th>Participation Date</th>
+      <th>Notes</th>
+      <th>Result</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for activity in activities %}
+    <tr>
+      <td>{{ activity.activity.name }}</td>
+      <td>{{ activity.participation_date }}</td>
+      <td>{{ activity.notes }}</td>
+      <td>{{ activity.get_result_display }}</td>
+    </tr>
+    {% empty %}
+    <tr>
+      <td colspan="4">No activities found.</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+<a href="{% url 'youth_list' %}">Back to Youth List</a>

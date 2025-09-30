@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from .models import Administrator, Youth
+from .models import Administrator, Youth, YouthActivity
 from .forms import YouthForm
 from django.http import HttpResponseForbidden
 # Create your views here.
@@ -82,3 +82,12 @@ def youth_delete(request, pk):
         youth.delete()
         return redirect('youth_list')
     return render(request, 'administration/youth_confirm_delete.html', {'youth': youth})
+
+# Youth Activities Views
+@login_required
+def youth_activity_list(request, pk):
+    if not request.user.is_staff:
+        return HttpResponseForbidden("You are not authorized to view this page.")
+    youth = get_object_or_404(Youth, pk=pk)
+    activities = YouthActivity.objects.filter(youth=youth)
+    return render(request, 'administration/youth_activity_list.html', {'youth': youth, 'activities': activities})
