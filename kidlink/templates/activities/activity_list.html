@@ -1,23 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>List of Activities</title>
-</head>
-<body>
-
+  </head>
+  <body>
     <h1>All Activities</h1>
     <ul>
-        {% for activity in  activities%}
-            <li>{{activity.activity_name}}</li>
-            <li>{{activity.description}}</li>
-            <li>{{activity.start_date}}</li>
-            <li>{{activity.end_date}}</li>
-        {%endfor%}
+      {% for activity in activities %}
+      <li>{{ activity.activity_name }}</li>
+      <li>{{ activity.description }}</li>
+      <li>{{ activity.start_date }}</li>
+      <li>{{ activity.end_date }}</li>
+      {% endfor %}
     </ul>
 
     <a href="#">Add another activity </a>
-    
-</body>
+    {% if not activities %}
+    <p>No activities found.</p>
+    {% endif %}
+  </body>
 </html>

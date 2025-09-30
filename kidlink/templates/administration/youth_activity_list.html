@@ -4,6 +4,7 @@
   <thead>
     <tr>
       <th>Activity</th>
+      <th>Youth</th>
       <th>Participation Date</th>
       <th>Notes</th>
       <th>Result</th>
@@ -12,7 +13,8 @@
   <tbody>
     {% for activity in activities %}
     <tr>
-      <td>{{ activity.activity.name }}</td>
+      <td>{{ activity.activity }}</td>
+      <td>{{ activity.youth }}</td>
       <td>{{ activity.participation_date }}</td>
       <td>{{ activity.notes }}</td>
       <td>{{ activity.get_result_display }}</td>

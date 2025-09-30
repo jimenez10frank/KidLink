@@ -20,36 +20,36 @@ class Administrator(models.Model):
         return f"{self.first_name} {self.last_name}"
 
 class Youth(models.Model):
-    GENDER_CHOICES = [
-        ('male', 'Male'),
-        ('female', 'Female'),
-        ('other', 'Other'),
-    ]
-
-    STATUS_CHOICES = [
-        ('active', 'Active'),
-        ('inactive', 'Inactive'),
-    ]
-
-    first_name = models.CharField(max_length=50)
-    last_name = models.CharField(max_length=50)
+    first_name = models.CharField(max_length=100)
+    last_name = models.CharField(max_length=100)
     date_of_birth = models.DateField()
-    gender = models.CharField(max_length=10, choices=GENDER_CHOICES)
-    status = models.CharField(max_length=10, choices=STATUS_CHOICES)
+    gender = models.CharField(max_length=10)
+    status = models.CharField(max_length=50)
     registration_due = models.DateField()
 
     def __str__(self):
-        return f"{self.user.username} - {self.role}"
+        # Use first_name + last_name instead of self.user
+        return f"{self.first_name} {self.last_name}"
 
-
-#class for activity 
+#activities class
 class Activity(models.Model):
-    activity_id = models.CharField(max_length=50, primary_key=True)
-    activity_name = models.CharField(max_length=100)
-    description = models.CharField(max_length=200)
+    activity_name = models.CharField(max_length=200)
+    description = models.TextField()
     start_date = models.DateField()
     end_date = models.DateField()
-    location = models.CharField(max_length=100)
-    
+    location = models.CharField(max_length=200)
+
     def __str__(self):
-        return f"{self.activity_id} {self.activity_name} {self.description} {self.start_date} {self.end_date} {self.location}"
+        # Use activity_name instead of activity_id
+        return self.activity_name
+
+# youth activities
+class YouthActivity(models.Model):
+    youth = models.ForeignKey(Youth, on_delete=models.CASCADE)
+    activity = models.ForeignKey(Activity, on_delete=models.CASCADE)
+    participation_date = models.DateField(auto_now_add=True)
+    notes = models.TextField(blank=True)
+    result = models.CharField(max_length=100, blank=True)
+
+    def __str__(self):
+        return f"{self.youth} → {self.activity}"
