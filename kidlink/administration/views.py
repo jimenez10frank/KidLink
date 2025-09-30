@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from .models import Administrator
+from .models import Activities
 # Create your views here.
 
 def admin_login(request):
@@ -32,3 +33,33 @@ def admin_logout(request):
 @login_required
 def admin_dashboard(request):
     return render(request, "administration/dashboard.html")
+
+
+#funtion for adding activity 
+def add_activity(request):
+    if request.method == "POST":
+        acitivity_name = request.POST.get('activity_name')
+        description = request.POST.get('description')
+        start_date = request.POST.get('start_date')
+        end_date = request.POST.get('end_date')
+        location = request.POST.get('location')
+        
+    # Saving this to the database
+        Activities.objects.create(
+            acitivity_name = acitivity_name,
+            description = description,
+            start_date = start_date,
+            end_date = end_date,
+            location = location
+        )
+    
+        return redirect("activity_list")
+    return render(request, "add_activity.html")
+
+# funtion to show the activity lists
+def activity_list(request):
+    activities = Activities.objects.all()
+    return render(request, 'activities/activity_list.html', {"activities":activities})
+
+    
+        

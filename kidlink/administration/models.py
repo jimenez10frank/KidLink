@@ -15,3 +15,15 @@ class Administrator(models.Model):
 
     def __str__(self):
         return f"{self.user.username} - {self.role}"
+
+#activites class 
+class Activities(models.Model):
+    activity_id = models.CharField(max_length=13, primary_key=True) #costum PK name
+    activity_name = models.CharField(max_length=30)
+    description = models.CharField(max_length=100)
+    start_date = models.DateField()
+    end_date = models.DateField()
+    location = models.CharField(max_length=50)
+    
+    def __str__(self):
+        return f"{self.activity_id} {self.activity_name} {self.description} {self.start_date} {self.end_date} {self.location}"
