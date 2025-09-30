@@ -40,3 +40,16 @@ class Youth(models.Model):
 
     def __str__(self):
         return f"{self.user.username} - {self.role}"
+
+
+#class for activity 
+class Activity(models.Model):
+    activity_id = models.CharField(max_length=50, primary_key=True)
+    activity_name = models.CharField(max_length=100)
+    description = models.CharField(max_length=200)
+    start_date = models.DateField()
+    end_date = models.DateField()
+    location = models.CharField(max_length=100)
+    
+    def __str__(self):
+        return f"{self.activity_id} {self.activity_name} {self.description} {self.start_date} {self.end_date} {self.location}"
