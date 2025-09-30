@@ -6,4 +6,17 @@ urlpatterns = [
     path("login/", views.admin_login, name="admin_login"),
     path("logout/", views.admin_logout, name="admin_logout"),
     path("dashboard/", views.admin_dashboard, name="admin_dashboard"),
+    # Youth Management URLs
+    path("youth/", views.youth_list, name="youth_list"),
+    path("youth/add/", views.youth_create, name="youth_create"),
+    path("youth/<int:pk>/edit/", views.youth_update, name="youth_update"),
+    path("youth/<int:pk>/delete/", views.youth_delete, name="youth_delete"),
+    # youth activities URLs
+    path("youth/activities/", views.youth_activity_list, name="youth_activity_list"),
+    path("youth/activities/add/", views.youth_activity_create, name="youth_activity_create"),
+    path("youth/activities/<int:pk>/edit/", views.youth_activity_update, name="youth_activity_update"),
+    path("youth/activities/<int:pk>/delete/", views.youth_activity_delete, name="youth_activity_delete"),
+    #activities urls
+    path("activities/", views.activity_list, name="activity_list"),
+    path("activities/add", views.add_activity, name="add_activity")
 ]
