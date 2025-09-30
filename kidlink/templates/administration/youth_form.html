@@ -1,0 +1,6 @@
+<h1>Youth Form</h1>
+<form method="post">
+  {% csrf_token %} {{ form.as_p}}
+  <button type="submit">Save</button>
+</form>
+<a href="{% url 'youth_list'%}">Back to list</a>
