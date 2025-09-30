@@ -4,14 +4,41 @@ from django.db import models
 from django.contrib.auth.models import User
 
 class Administrator(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="administrator_profile")
-    phone_number = models.CharField(max_length=20, blank=True, null=True)
-    role = models.CharField(max_length=100, choices=[
-        ("manager", "Manager"),
-        ("coordinator", "Coordinator"),
-        ("staff", "Staff"),
-    ])
-    created_at = models.DateTimeField(auto_now_add=True)
+    ROLE_CHOICES = [
+        ('manager', 'Manager'),
+        ('coordinator', 'Coordinator'),
+        ('staff', 'Staff'),
+    ]
+
+    first_name = models.CharField(max_length=50)
+    last_name = models.CharField(max_length=50)
+    email = models.EmailField(unique=True)
+    password = models.CharField(max_length=128)  # store hashed passwords
+    role = models.CharField(max_length=20, choices=ROLE_CHOICES)
 
     def __str__(self):
-        return f"{self.user.username} - {self.role}"
+        return f"{self.first_name} {self.last_name}"
+
+class Youth(models.Model):
+    GENDER_CHOICES = [
+        ('male', 'Male'),
+        ('female', 'Female'),
+        ('other', 'Other'),
+    ]
+
+    STATUS_CHOICES = [
+        ('active', 'Active'),
+        ('inactive', 'Inactive'),
+    ]
+
+    first_name = models.CharField(max_length=50)
+    last_name = models.CharField(max_length=50)
+    date_of_birth = models.DateField()
+    gender = models.CharField(max_length=10, choices=GENDER_CHOICES)
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES)
+    registration_due = models.DateField()
+
+    def __str__(self):
+        return f"{self.first_name} {self.last_name}"
+    
+

@@ -1,0 +1,11 @@
+<h1>Youth List</h1>
+<a href="{% url 'youth_create' %}">add New Youth</a>
+<ul>
+  {% for youth in youths %}
+  <li>
+    {{ youth.first_name }} {{youth.last_name}}
+    <a href="{% url 'youth_update' youth.pk %}">Edit</a> |
+    <a href="{% url 'youth_delete' youth.pk %}">Delete</a>
+  </li>
+  {% endfor %}
+</ul>
