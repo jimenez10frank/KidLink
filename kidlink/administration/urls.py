@@ -18,5 +18,7 @@ urlpatterns = [
     path("youth/activities/<int:pk>/delete/", views.youth_activity_delete, name="youth_activity_delete"),
     #activities urls
     path("activities/", views.activity_list, name="activity_list"),
-    path("activities/add", views.add_activity, name="add_activity")
+    path("activities/add", views.add_activity, name="add_activity"),
+    path("activities/<int:pk>/activity_edit/", views.update_activity, name="update_activity"),
+    path("activities/<int:pk>/delete_activity/", views.delete_activity, name="delete_activity")
 ]

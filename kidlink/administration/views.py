@@ -56,6 +56,31 @@ def activity_list(request):
     activities = Activity.objects.all()
     return render(request, 'activities/activity_list.html', {"activities":activities})
 
+# function to edit an activity
+@login_required
+def update_activity(request,pk):
+    if not request.user.is_staff:
+        return HttpResponseForbidden("You are not authorized to edit activities")
+    activity = get_object_or_404(Activity, pk=pk)
+    if request.method == "POST":
+        form = ActivityForm(request.POST, instance=activity)
+        if form.is_valid():
+            form.save()
+            return redirect('activity_list')
+    else:
+        form = ActivityForm(instance=activity)
+        return render(request, 'activities/activity_update.html',{'form':form})
+    
+# function to delete an acitivty
+@login_required
+def delete_activity(request, pk):
+    if not request.user.is_staff:
+        return HttpResponseForbidden("You are not authorized to delete an activity")
+    activity = get_object_or_404(Activity, pk=pk)
+    if request.method == "POST":
+        activity.delete() # deleting  the activity
+        return redirect('activity_list') 
+    return render(request, 'activities/activity_confirm_delete.html', {'activity': activity})
 
 # Youth Activity Administration
 @login_required

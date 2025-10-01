@@ -13,10 +13,12 @@
       <li>{{ activity.description }}</li>
       <li>{{ activity.start_date }}</li>
       <li>{{ activity.end_date }}</li>
+      <a href="{% url 'update_activity' activity.pk %}">Edit</a> |
+      <a href="{% url 'delete_activity' activity.pk %}">Delete</a>
       {% endfor %}
     </ul>
 
-    <a href="#">Add another activity </a>
+    <a href="{% url 'add_activity'%}">Add another activity </a>
     {% if not activities %}
     <p>No activities found.</p>
     {% endif %}
