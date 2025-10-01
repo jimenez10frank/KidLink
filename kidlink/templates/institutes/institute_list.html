@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>List of Institutes</title>
+  </head>
+  <body>
+    <h1>All Institutes</h1>
+    <ul>
+      {% for institute in institutes %}
+      <li>{{ institute.institute_name }}</li>
+      <li>{{ institute.type }}</li>
+      <li>{{ institute.address }}</li>
+      <li>{{ institute.contact_person }}</li>
+      <li>{{ institute.phone }}</li>
+      <li>{{ institute.email }}</li>
+      <a href="{% url 'update_institute' institute.pk %}">Edit</a> |
+      <a href="{% url 'delete_institute' institute.pk %}">Delete</a>
+      {% endfor %}
+    </ul>
+
+    <a href="{% url 'add_institute'%}">Add another institute </a>
+    {% if not institutes %}
+    <p>No activities found.</p>
+    {% endif %}
+  </body>
+</html>

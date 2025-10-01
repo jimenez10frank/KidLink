@@ -20,5 +20,12 @@ urlpatterns = [
     path("activities/", views.activity_list, name="activity_list"),
     path("activities/add", views.add_activity, name="add_activity"),
     path("activities/<int:pk>/activity_edit/", views.update_activity, name="update_activity"),
-    path("activities/<int:pk>/delete_activity/", views.delete_activity, name="delete_activity")
+    path("activities/<int:pk>/delete_activity/", views.delete_activity, name="delete_activity"),
+    #institutes URLS
+    path("institutes/", views.institute_list, name="institute_list"),
+    path("institutes/add", views.add_institute, name="add_institute"),
+    path("institutes/<int:pk>/institute_edit/", views.update_institute, name="update_institute"),
+    path("institutes/<int:pk>/delete_institute/", views.delete_institute, name="delete_institute"),
+
+    
 ]

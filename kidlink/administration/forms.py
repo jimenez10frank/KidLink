@@ -22,5 +22,5 @@ class YouthActivityForm(forms.ModelForm):
 #Form for institutes can be added too 
 class InstituteForm(forms.ModelForm):
     class Meta:
-        model:Institute
+        model = Institute
         fields = ['institute_name', 'type', 'address', 'contact_person', 'phone', 'email']
