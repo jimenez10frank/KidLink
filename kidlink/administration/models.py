@@ -53,3 +53,12 @@ class YouthActivity(models.Model):
 
     def __str__(self):
         return f"{self.youth} → {self.activity}"
+    
+#insitute class
+class Institute(models.Model):
+    institute_name = models.CharField(max_length=500)
+    type = models.CharField(max_length=200)
+    address = models.CharField(max_length=500)
+    contact_person = models.CharField(max_length=100)
+    phone = models.BigIntegerField()
+    email = models.EmailField()
