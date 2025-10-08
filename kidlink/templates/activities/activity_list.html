@@ -4,23 +4,38 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>List of Activities</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'CSS/activityList.css' %}">
   </head>
   <body>
-    <h1>All Activities</h1>
-    <ul>
-      {% for activity in activities %}
-      <li>{{ activity.activity_name }}</li>
-      <li>{{ activity.description }}</li>
-      <li>{{ activity.start_date }}</li>
-      <li>{{ activity.end_date }}</li>
-      <a href="{% url 'update_activity' activity.pk %}">Edit</a> |
-      <a href="{% url 'delete_activity' activity.pk %}">Delete</a>
-      {% endfor %}
-    </ul>
+    <div class="container">
+      <h1>All Activities</h1>
 
-    <a href="{% url 'add_activity'%}">Add another activity </a>
-    {% if not activities %}
-    <p>No activities found.</p>
-    {% endif %}
+      {% if activities %}
+      <div class="activity-list">
+        {% for activity in activities %}
+        <div class="activity-card">
+          <h2>{{ activity.activity_name }}</h2>
+          <p class="desc">{{ activity.description }}</p>
+          <div class="details">
+            <span><strong>Start:</strong> {{ activity.start_date }}</span>
+            <span><strong>End:</strong> {{ activity.end_date }}</span>
+          </div>
+          <div class="actions">
+            <a href="{% url 'update_activity' activity.pk %}" class="edit-btn">Edit</a>
+            <a href="{% url 'delete_activity' activity.pk %}" class="delete-btn">Delete</a>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}
+      <p class="no-data">No activities found.</p>
+      {% endif %}
+
+      <div class="bottom-actions">
+        <a href="{% url 'add_activity' %}" class="add-btn">+ Add another activity</a>
+      </div>
+    </div>
   </body>
 </html>
+
