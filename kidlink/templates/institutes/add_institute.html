@@ -1,16 +1,26 @@
-112<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
   <head>
-    <title>Add an Institute</title>
+    <title>Add Institute</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'CSS/activity.css' %}">  
   </head>
   <body>
-    <h1>Add an institute</h1>
-    {% if error %}
-    <p style="color: red">{{ error }}</p>
-    {% endif %}
-    <form method="post">
-      {% csrf_token %} {{ form.as_p }}
-      <button type="submit">Add Institute</button>
-    </form>
+    <div class="form-container">
+      <div class="rightPart">
+        <h1>Add an Institute</h1>
+        {% if error %}
+        <p style="color: red;">{{ error }}</p>
+        {% endif %}
+
+        <form method="post">
+          {% csrf_token %}
+          {{ form.as_p }}
+          <button type="submit">Add Institute</button>
+        </form>
+
+        <a href="{% url 'institute_list' %}" class="aLink">← Back to list</a>
+      </div>
+    </div>
   </body>
 </html>

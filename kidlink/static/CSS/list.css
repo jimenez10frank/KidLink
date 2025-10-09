@@ -22,13 +22,13 @@ h1 {
   margin-bottom: 30px;
 }
 
-.activity-list {
+.list {
   display: flex;
   flex-direction: column;
   gap: 1rem;
 }
 
-.activity-card {
+.card {
   background: #fff;
   border-radius: 12px;
   border: 1px solid #e0e0e0;
@@ -37,19 +37,19 @@ h1 {
   transition: all 0.2s ease-in-out;
 }
 
-.activity-card:hover {
+.card:hover {
   transform: translateY(-4px);
   border-color: #8b5cf6;
   box-shadow: 0 8px 20px rgba(139, 92, 246, 0.15);
 }
 
-.activity-card h2 {
+.card h2 {
   margin: 0 0 8px;
   color: #333;
   font-size: 1.2rem;
 }
 
-.activity-card .desc {
+.card .desc {
   color: #555;
   margin-bottom: 12px;
   font-size: 0.95rem;

@@ -5,16 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>List of Activities</title>
     {% load static %}
-    <link rel="stylesheet" href="{% static 'CSS/activityList.css' %}">
+    <link rel="stylesheet" href="{% static 'CSS/list.css' %}">
+    <link rel="stylesheet" href="{% static 'CSS/style.css' %}">
   </head>
   <body>
+    <div class="navbar">
+      <a href="{% url 'youth_list' %}">Youth</a>
+      <a href="{% url 'activity_list' %}">Activities</a>
+      <a href="{% url 'institute_list' %}">Institutes</a>
+    </div>
     <div class="container">
       <h1>All Activities</h1>
 
       {% if activities %}
-      <div class="activity-list">
+      <div class="list">
         {% for activity in activities %}
-        <div class="activity-card">
+        <div class="card">
           <h2>{{ activity.activity_name }}</h2>
           <p class="desc">{{ activity.description }}</p>
           <div class="details">

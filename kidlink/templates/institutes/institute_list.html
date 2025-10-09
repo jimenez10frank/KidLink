@@ -4,25 +4,49 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>List of Institutes</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'CSS/list.css' %}">
+    <link rel="stylesheet" href="{% static 'CSS/style.css' %}">
   </head>
-  <body>
-    <h1>All Institutes</h1>
-    <ul>
-      {% for institute in institutes %}
-      <li>{{ institute.institute_name }}</li>
-      <li>{{ institute.type }}</li>
-      <li>{{ institute.address }}</li>
-      <li>{{ institute.contact_person }}</li>
-      <li>{{ institute.phone }}</li>
-      <li>{{ institute.email }}</li>
-      <a href="{% url 'update_institute' institute.pk %}">Edit</a> |
-      <a href="{% url 'delete_institute' institute.pk %}">Delete</a>
-      {% endfor %}
-    </ul>
 
-    <a href="{% url 'add_institute'%}">Add another institute </a>
-    {% if not institutes %}
-    <p>No activities found.</p>
-    {% endif %}
+  <body>
+    <div class="navbar">
+      <a href="{% url 'youth_list' %}">Youth</a>
+      <a href="{% url 'activity_list' %}">Activities</a>
+      <a href="{% url 'institute_list' %}">Institutes</a>
+    </div>
+
+    <div class="container">
+      <h1>All Institutes</h1>
+
+      {% if institutes %}
+      <div class="list">
+        {% for institute in institutes %}
+        <div class="card">
+          <h2>{{ institute.institute_name }}</h2>
+          <p class="desc"><strong>Type:</strong> {{ institute.type }}</p>
+          <div class="details">
+            <span><strong>Address:</strong> {{ institute.address }}</span>
+            <span><strong>Contact:</strong> {{ institute.contact_person }}</span>
+          </div>
+          <div class="details">
+            <span><strong>Phone:</strong> {{ institute.phone }}</span>
+            <span><strong>Email:</strong> {{ institute.email }}</span>
+          </div>
+          <div class="actions">
+            <a href="{% url 'update_institute' institute.pk %}" class="edit-btn">Edit</a>
+            <a href="{% url 'delete_institute' institute.pk %}" class="delete-btn">Delete</a>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}
+      <p class="no-data">No institutes found.</p>
+      {% endif %}
+
+      <div class="bottom-actions">
+        <a href="{% url 'add_institute' %}" class="add-btn">+ Add another institute</a>
+      </div>
+    </div>
   </body>
 </html>

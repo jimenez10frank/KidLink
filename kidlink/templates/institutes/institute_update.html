@@ -1,6 +1,26 @@
-<h1>Activity Form</h1>
-<form method="post">
-  {% csrf_token %} {{ form.as_p}}
-  <button type="submit">Save</button>
-</form>
-<a href="{% url 'institute_list'%}">Back to list</a>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Update Institute</title>
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'CSS/form.css' %}"> 
+</head>
+<body>
+
+  <div class="form-container">
+    <div class="rightPart">
+      <h1>Institute Form</h1>
+      <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Save</button>
+      </form>
+
+      <a href="{% url 'institute_list' %}" class="aLink">← Back to list</a>
+    </div>
+  </div>
+  
+</body>
+</html>
