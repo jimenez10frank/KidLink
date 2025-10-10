@@ -9,6 +9,7 @@ from django.http import HttpResponseForbidden
 # administration Authentication
 from django.contrib.auth import authenticate, login
 from django.shortcuts import render, redirect
+from django.contrib import messages
 
 def admin_login(request):
     if request.method == "POST":
@@ -17,6 +18,7 @@ def admin_login(request):
         user = authenticate(request, username=username, password=password)
         if user is not None and user.is_staff:  # only staff can log in
             login(request, user)
+            messages.success(request, f"Welcome back, {user.username}!")
             return redirect("admin_dashboard")
         else:
             return render(request, "administration/login.html", {

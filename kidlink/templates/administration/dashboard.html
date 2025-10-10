@@ -1,4 +1,18 @@
-{% extends "sidebar.html" %} {% block content %}
+{% extends "sidebar.html" %} {% block content %} {% if messages %}
+<div class="message-container">
+  {% for message in messages %}
+  <div class="alert {{ message.tags }}">{{ message }}</div>
+  {% endfor %}
+</div>
+{% endif %}
 <h1>Welcome, {{ request.user.username }}</h1>
 <p>This is the Administrator dashboard.</p>
+<script>
+  setTimeout(() => {
+    document.querySelectorAll(".alert").forEach((msg) => {
+      msg.style.opacity = "0";
+      setTimeout(() => msg.remove(), 500);
+    });
+  }, 3000);
+</script>
 {% endblock %}
