@@ -1,0 +1,104 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Administrator Dashboard</title>
+    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  </head>
+  <body>
+    <!-- Hamburger button -->
+    <button class="hamburger" id="hamburger">
+      <i class="fas fa-bars"></i>
+    </button>
+
+    <!-- Sidebar -->
+    <nav class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <h2>Admin Dashboard</h2>
+      </div>
+
+      <ul class="sidebar-menu">
+        <li
+          class="{% if request.path == '/administration/youth/' %}active{% endif %}"
+        >
+          <a href="{% url 'youth_list' %}"
+            ><i class="fas fa-users"></i> Youth list</a
+          >
+        </li>
+        <li
+          class="{% if request.path == '/administration/youth/create/' %}active{% endif %}"
+        >
+          <a href="{% url 'youth_create' %}"
+            ><i class="fas fa-user-plus"></i> Create Youth</a
+          >
+        </li>
+        <li
+          class="{% if request.path == '/administration/youth-activities/' %}active{% endif %}"
+        >
+          <a href="{% url 'youth_activity_list' %}"
+            ><i class="fas fa-calendar-check"></i> Youth Activities</a
+          >
+        </li>
+        <li
+          class="{% if request.path == '/administration/activities/' %}active{% endif %}"
+        >
+          <a href="{% url 'activity_list' %}"
+            ><i class="fas fa-list"></i> All Activities</a
+          >
+        </li>
+        <li
+          class="{% if request.path == '/administration/activities/add/' %}active{% endif %}"
+        >
+          <a href="{% url 'add_activity' %}"
+            ><i class="fas fa-plus-square"></i> Add Activity</a
+          >
+        </li>
+        <li
+          class="{% if request.path == '/administration/youth-activity/create/' %}active{% endif %}"
+        >
+          <a href="{% url 'youth_activity_create' %}"
+            ><i class="fas fa-tasks"></i> Create Youth Activity</a
+          >
+        </li>
+      </ul>
+
+      <ul class="sidebar-menu bottom">
+        <li>
+          <a href="{% url 'admin_logout' %}"
+            ><i class="fas fa-sign-out-alt"></i> Logout</a
+          >
+        </li>
+      </ul>
+    </nav>
+
+    <!-- Overlay -->
+    <div class="overlay" id="overlay"></div>
+    <main class="main-content">{% block content %} {% endblock %}</main>
+
+    <script>
+      const hamburger = document.getElementById("hamburger");
+      const sidebar = document.getElementById("sidebar");
+      const overlay = document.getElementById("overlay");
+
+      function openSidebar() {
+        sidebar.classList.add("active");
+        overlay.classList.add("active");
+        hamburger.style.display = "none";
+      }
+
+      function closeSidebar() {
+        sidebar.classList.remove("active");
+        overlay.classList.remove("active");
+        hamburger.style.display = "block";
+      }
+
+      hamburger.addEventListener("click", openSidebar);
+      overlay.addEventListener("click", closeSidebar);
+    </script>
+  </body>
+</html>

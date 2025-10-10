@@ -1,3 +1,5 @@
+{% extends "sidebar.html" %} {% block content %}
+
 <h1>Activities for {{ youth.first_name }} {{ youth.last_name }}</h1>
 
 <table>
@@ -27,3 +29,4 @@
   </tbody>
 </table>
 <a href="{% url 'youth_list' %}">Back to Youth List</a>
+{% endblock content%}

@@ -1,19 +1,4 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>Administrator Dashboard</title>
-  </head>
-  <body>
-    <h1>Welcome, {{request.user.username}}</h1>
-    <p>This is the Administrator dashboard.</p>
-    <a href="{% url 'youth_list' %}">Youth list</a>
-    <a href="{% url 'youth_create' %}">Create Youth</a>
-    <a href="{% url 'youth_activity_list' %}">Youth Activities</a>
-    <a href="{% url 'activity_list' %}">All Activities</a>
-    <a href="{% url 'add_activity' %}">Add Activity</a>
-    <a href="{% url 'youth_activity_create' %}">Create Youth Activity</a>
-
-    <a href="{% url 'admin_logout' %}">Logout</a>
-    </form>
-  </body>
-</html>
+{% extends "sidebar.html" %} {% block content %}
+<h1>Welcome, {{ request.user.username }}</h1>
+<p>This is the Administrator dashboard.</p>
+{% endblock %}

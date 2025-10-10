@@ -1,3 +1,4 @@
+{% extends "sidebar.html" %} {% block content %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -5,8 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>List of Activities</title>
     {% load static %}
-    <link rel="stylesheet" href="{% static 'CSS/list.css' %}">
-    <link rel="stylesheet" href="{% static 'CSS/style.css' %}">
+    <link rel="stylesheet" href="{% static 'CSS/list.css' %}" />
+    <link rel="stylesheet" href="{% static 'CSS/style.css' %}" />
   </head>
   <body>
     <div class="navbar">
@@ -28,8 +29,12 @@
             <span><strong>End:</strong> {{ activity.end_date }}</span>
           </div>
           <div class="actions">
-            <a href="{% url 'update_activity' activity.pk %}" class="edit-btn">Edit</a>
-            <a href="{% url 'delete_activity' activity.pk %}" class="delete-btn">Delete</a>
+            <a href="{% url 'update_activity' activity.pk %}" class="edit-btn"
+              >Edit</a
+            >
+            <a href="{% url 'delete_activity' activity.pk %}" class="delete-btn"
+              >Delete</a
+            >
           </div>
         </div>
         {% endfor %}
@@ -39,9 +44,11 @@
       {% endif %}
 
       <div class="bottom-actions">
-        <a href="{% url 'add_activity' %}" class="add-btn">+ Add another activity</a>
+        <a href="{% url 'add_activity' %}" class="add-btn"
+          >+ Add another activity</a
+        >
       </div>
     </div>
   </body>
 </html>
-
+{% endblock %}
