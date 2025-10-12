@@ -4,6 +4,7 @@
   <head>
     <title>Administrator Dashboard</title>
     <link rel="stylesheet" href="{% static 'css/sidebar.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/index.css' %}" />
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
@@ -19,67 +20,78 @@
     <!-- Sidebar -->
     <nav class="sidebar" id="sidebar">
       <div class="sidebar-header">
-        <h2>Admin Dashboard</h2>
+        <h2>
+          <a href="{% url 'admin_dashboard' %}" class="active">
+            Admin Dashboard
+          </a>
+        </h2>
       </div>
 
       <ul class="sidebar-menu">
         <li
           class="{% if request.path == '/administration/youth/' %}active{% endif %}"
         >
-          <a href="{% url 'youth_list' %}"
-            ><i class="fas fa-users"></i> Youth list</a
-          >
+          <a href="{% url 'youth_list' %}">
+            <i class="fas fa-users"></i> Youth list
+          </a>
         </li>
         <li
-          class="{% if request.path == '/administration/youth/create/' %}active{% endif %}"
+          class="{% if request.path == '/administration/youth/add/' %}active{% endif %}"
         >
-          <a href="{% url 'youth_create' %}"
-            ><i class="fas fa-user-plus"></i> Create Youth</a
-          >
+          <a href="{% url 'youth_create' %}">
+            <i class="fas fa-user-plus"></i> Create Youth
+          </a>
         </li>
         <li
-          class="{% if request.path == '/administration/youth-activities/' %}active{% endif %}"
+          class="{% if request.path == '/administration/youth/activities/' %}active{% endif %}"
         >
-          <a href="{% url 'youth_activity_list' %}"
-            ><i class="fas fa-calendar-check"></i> Youth Activities</a
-          >
+          <a href="{% url 'youth_activity_list' %}">
+            <i class="fas fa-calendar-check"></i> Youth Activities
+          </a>
         </li>
         <li
           class="{% if request.path == '/administration/activities/' %}active{% endif %}"
         >
-          <a href="{% url 'activity_list' %}"
-            ><i class="fas fa-list"></i> All Activities</a
-          >
+          <a href="{% url 'activity_list' %}">
+            <i class="fas fa-list"></i> All Activities
+          </a>
         </li>
         <li
           class="{% if request.path == '/administration/activities/add/' %}active{% endif %}"
         >
-          <a href="{% url 'add_activity' %}"
-            ><i class="fas fa-plus-square"></i> Add Activity</a
-          >
+          <a href="{% url 'add_activity' %}">
+            <i class="fas fa-plus-square"></i> Add Activity
+          </a>
         </li>
         <li
-          class="{% if request.path == '/administration/youth-activity/create/' %}active{% endif %}"
+          class="{% if request.path == '/administration/youth/activities/add/' %}active{% endif %}"
         >
-          <a href="{% url 'youth_activity_create' %}"
-            ><i class="fas fa-tasks"></i> Create Youth Activity</a
-          >
+          <a href="{% url 'youth_activity_create' %}">
+            <i class="fas fa-tasks"></i> Create Youth Activity
+          </a>
         </li>
       </ul>
 
       <ul class="sidebar-menu bottom">
         <li>
-          <a href="{% url 'admin_logout' %}"
-            ><i class="fas fa-sign-out-alt"></i> Logout</a
-          >
+          <a href="{% url 'admin_logout' %}">
+            <i class="fas fa-sign-out-alt"></i> Logout
+          </a>
         </li>
       </ul>
     </nav>
 
     <!-- Overlay -->
     <div class="overlay" id="overlay"></div>
-    <main class="main-content">{% block content %} {% endblock %}</main>
 
+    <!-- Main Content with fade transition -->
+    <main class="main-content">
+      <div id="fade-container" class="fade-container">
+        {% block content %} {% endblock %}
+      </div>
+    </main>
+
+    <!-- Sidebar Toggle Script -->
     <script>
       const hamburger = document.getElementById("hamburger");
       const sidebar = document.getElementById("sidebar");
@@ -99,6 +111,27 @@
 
       hamburger.addEventListener("click", openSidebar);
       overlay.addEventListener("click", closeSidebar);
+    </script>
+
+    <!-- Smooth Page Transition Script -->
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const fadeContainer = document.getElementById("fade-container");
+        // Fade-in when page loads
+        setTimeout(() => fadeContainer.classList.add("active"), 50);
+
+        // Fade-out when clicking sidebar links
+        document.querySelectorAll(".sidebar-menu a").forEach((link) => {
+          link.addEventListener("click", (e) => {
+            e.preventDefault();
+            const url = link.getAttribute("href");
+            fadeContainer.classList.remove("active");
+            setTimeout(() => {
+              window.location.href = url;
+            }, 300); // matches CSS fade duration
+          });
+        });
+      });
     </script>
   </body>
 </html>

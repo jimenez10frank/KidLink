@@ -1,18 +1,156 @@
-{% extends "sidebar.html" %} {% block content %} {% if messages %}
-<div class="message-container">
-  {% for message in messages %}
-  <div class="alert {{ message.tags }}">{{ message }}</div>
-  {% endfor %}
+{% extends "sidebar.html" %} {% load static %} {% block content %}
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+/>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<link rel="stylesheet" href="{% static 'css/dashboard.css' %}" />
+
+<div class="dashboard-container">
+  <!-- Top Row: Small Stats Cards -->
+  <div class="stats-cards">
+    <div class="card">
+      <i class="fas fa-users"></i>
+      <p>Total Youth</p>
+      <span>120</span>
+    </div>
+    <div class="card">
+      <i class="fas fa-calendar-check"></i>
+      <p>Active Activities</p>
+      <span>35</span>
+    </div>
+    <div class="card">
+      <i class="fas fa-school"></i>
+      <p>Institutes</p>
+      <span>8</span>
+    </div>
+    <div class="card">
+      <i class="fas fa-bullseye"></i>
+      <p>Participations</p>
+      <span>200</span>
+    </div>
+    <div class="card">
+      <i class="fas fa-calendar-alt"></i>
+      <p>Upcoming Events</p>
+      <span>5</span>
+    </div>
+    <div class="card">
+      <i class="fas fa-star"></i>
+      <p>Top Youth</p>
+      <span>Jane Doe</span>
+    </div>
+  </div>
+
+  <!-- Middle Row: Mini Charts -->
+  <div class="charts-container">
+    <div class="chart-box">
+      <h5><i class="fas fa-chart-line"></i> Youth per Activity</h5>
+      <canvas id="youthActivityChart" height="100"></canvas>
+    </div>
+    <div class="chart-box">
+      <h5><i class="fas fa-venus-mars"></i> Gender Distribution</h5>
+      <canvas id="genderChart" height="100"></canvas>
+    </div>
+    <div class="chart-box">
+      <h5><i class="fas fa-calendar-check"></i> Activities Completion</h5>
+      <canvas id="activityCompletionChart" height="100"></canvas>
+    </div>
+  </div>
+
+  <!-- Bottom Row: Recent Activities -->
+  <div class="recent-activities">
+    <h5><i class="fas fa-history"></i> Recent Activities</h5>
+    <ul>
+      <li>
+        <img src="{% static 'img/youth1.jpg' %}" alt="John" /> John Doe joined
+        "Coding Club"
+      </li>
+      <li>
+        <img src="{% static 'img/youth2.jpg' %}" alt="Mary" /> Mary Smith
+        enrolled in "Music Class"
+      </li>
+      <li>
+        <img src="{% static 'img/institute.jpg' %}" alt="Institute" /> New
+        Institute "Bright Futures" added
+      </li>
+      <li>
+        <img src="{% static 'img/youth3.jpg' %}" alt="James" /> James Lee joined
+        "Sports Club"
+      </li>
+    </ul>
+  </div>
 </div>
-{% endif %}
-<h1>Welcome, {{ request.user.username }}</h1>
-<p>This is the Administrator dashboard.</p>
+
 <script>
-  setTimeout(() => {
-    document.querySelectorAll(".alert").forEach((msg) => {
-      msg.style.opacity = "0";
-      setTimeout(() => msg.remove(), 500);
-    });
-  }, 3000);
+  /* Mini Bar Chart */
+  const ctx = document.getElementById("youthActivityChart").getContext("2d");
+  new Chart(ctx, {
+    type: "bar",
+    data: {
+      labels: ["Sports", "Arts", "Music", "Science", "Coding"],
+      datasets: [
+        {
+          label: "Youth",
+          data: [25, 15, 30, 20, 30],
+          backgroundColor: "#85BA49",
+          borderRadius: 4,
+          barPercentage: 0.4,
+        },
+      ],
+    },
+    options: {
+      responsive: true,
+      plugins: { legend: { display: false } },
+      scales: { y: { display: false }, x: { grid: { display: false } } },
+    },
+  });
+
+  /* Mini Donut Chart */
+  const ctx2 = document.getElementById("genderChart").getContext("2d");
+  new Chart(ctx2, {
+    type: "doughnut",
+    data: {
+      labels: ["Male", "Female", "Other"],
+      datasets: [
+        {
+          data: [60, 55, 5],
+          backgroundColor: ["#85BA49", "#333", "#666"],
+          borderWidth: 0,
+        },
+      ],
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { position: "bottom", labels: { boxWidth: 10, padding: 5 } },
+      },
+      cutout: "70%",
+    },
+  });
+
+  /* Mini Doughnut Chart for Activity Completion */
+  const ctx3 = document
+    .getElementById("activityCompletionChart")
+    .getContext("2d");
+  new Chart(ctx3, {
+    type: "doughnut",
+    data: {
+      labels: ["Completed", "Pending"],
+      datasets: [
+        {
+          data: [70, 30],
+          backgroundColor: ["#85BA49", "#ccc"],
+          borderWidth: 0,
+        },
+      ],
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { position: "bottom", labels: { boxWidth: 10, padding: 5 } },
+      },
+      cutout: "70%",
+    },
+  });
 </script>
 {% endblock %}
