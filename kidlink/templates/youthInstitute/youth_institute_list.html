@@ -16,6 +16,12 @@
       <td>{{ youth_institute.institute }}</td>
       <td>{{ youth_institute.placement_date }}</td>
       <td>{{ youth_institute.status }}</td>
+      <td>
+        <a href="{% url 'youth_institute_update' youth_institute.pk %}">Edit</a>
+        <a href="{% url 'youth_institute_delete' youth_institute.pk %}"
+          >Delete</a
+        >
+      </td>
     </tr>
     {% endfor %}
   </tbody>

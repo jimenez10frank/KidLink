@@ -1,0 +1,8 @@
+{% extends "sidebar.html" %} {% block content %}
+<h1>Confirm Delete Youth Institute</h1>
+<p>Are you sure you want to delete this youth institute?</p>
+<form method="POST">
+  {% csrf_token %}
+  <button type="submit">Confirm</button>
+</form>
+{% endblock %}

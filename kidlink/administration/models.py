@@ -67,10 +67,16 @@ class Institute(models.Model):
         return self.institute_name
     
 class YouthInstitute(models.Model):
+    STATUS_CHOICES = [
+        ('active', 'Active'),
+        ('inactive', 'Inactive'),
+        ('pending', 'Pending'),
+    ]
+
     youth = models.ForeignKey(Youth, on_delete=models.CASCADE)
     institute = models.ForeignKey(Institute, on_delete=models.CASCADE)
     placement_date = models.DateField(auto_now_add=True)
-    status = models.CharField(max_length=100, blank=True)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Active')
 
     def __str__(self):
         return f"{self.youth} → {self.institute}"
