@@ -1,21 +1,129 @@
-{% extends "sidebar.html" %} {% block content %}
+{% extends "sidebar.html" %} 
+{% load static %}
 
-<h1>Create Youth Activity</h1>
-<form method="post">
-  {% csrf_token %} {{ form.as_p }}
-  <button type="submit">Create Activity</button>
-</form>
-<a href="{% url 'youth_activity_list' %}">Back to Youth Activities</a>
-{% endblock content %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'CSS/youth_activity_create.css' %}" />
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+/>
+
+<div class="youth-activity-create-container">
+  <!-- Page Header -->
+  <div class="page-header">
+    <i class="fas fa-clipboard-list"></i>
+    <h1>Create Youth Activity Assignment</h1>
+    <p>
+      Assign a youth to an activity and track their participation. Fill in all
+      required information below to create a new activity assignment.
+    </p>
+  </div>
+
+  <!-- Info Box -->
+  <div class="info-box">
+    <i class="fas fa-info-circle"></i>
+    <div class="info-box-content">
+      <h3>What is a Youth Activity Assignment?</h3>
+      <p>
+        A youth activity assignment connects a specific youth with an activity,
+        allowing you to track their participation, add notes about their
+        progress, and record results. This helps maintain organized records of
+        all youth engagements.
+      </p>
+    </div>
+  </div>
+
+  <!-- Form Instructions -->
+  <div class="form-instructions">
+    <p>
+      <i class="fas fa-exclamation-triangle"></i>
+      <span
+        >Fields marked with <strong>*</strong> are required. Please ensure all
+        information is accurate before submitting.</span
+      >
+    </p>
+  </div>
+
+  <!-- Form Wrapper -->
+  <div class="form-wrapper">
+    <form method="post" id="activityForm">
+      {% csrf_token %} {{ form.as_p }}
+
+      <div class="button-group">
+        <button type="submit" id="submitBtn">
+          <i class="fas fa-plus-circle"></i>
+          <span>Create Activity Assignment</span>
+        </button>
+        <a href="{% url 'youth_activity_list' %}" class="back-link">
+          <i class="fas fa-arrow-left"></i>
+          <span>Back to Youth Activities</span>
+        </a>
+      </div>
+    </form>
+  </div>
+</div>
+
 <script>
-  const form = document.querySelector("form");
-  const form = document.querySelector("form");
+  // Form submission confirmation
+  const form = document.getElementById("activityForm");
+  const submitBtn = document.getElementById("submitBtn");
+
   form.addEventListener("submit", (event) => {
     const confirmation = confirm(
-      "Are you sure you want to create this activity?"
+      "Are you sure you want to create this activity assignment?"
     );
     if (!confirmation) {
       event.preventDefault();
+    } else {
+      // Add loading state to button
+      submitBtn.classList.add("loading");
+      submitBtn.disabled = true;
     }
   });
+
+  // Add icons to form labels for better UX
+  document.addEventListener("DOMContentLoaded", () => {
+    const labels = form.querySelectorAll("label");
+    const iconMap = {
+      youth: "fa-user",
+      activity: "fa-calendar-check",
+      notes: "fa-sticky-note",
+      result: "fa-trophy",
+    };
+
+    labels.forEach((label) => {
+      const forAttr = label.getAttribute("for");
+      if (forAttr) {
+        // Extract field name from id
+        const fieldName = forAttr.replace("id_", "");
+        const iconClass = iconMap[fieldName];
+        if (iconClass) {
+          const icon = document.createElement("i");
+          icon.className = `fas ${iconClass}`;
+          label.insertBefore(icon, label.firstChild);
+        }
+      }
+    });
+
+    // Add smooth scroll to form on page load
+    setTimeout(() => {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }, 100);
+  });
+
+  // Enhanced form field interactions
+  const formInputs = form.querySelectorAll("input, select, textarea");
+  formInputs.forEach((input) => {
+    // Add focus/blur animations
+    input.addEventListener("focus", function () {
+      this.parentElement.style.transform = "scale(1.01)";
+      this.parentElement.style.transition = "transform 0.2s ease";
+    });
+
+    input.addEventListener("blur", function () {
+      this.parentElement.style.transform = "scale(1)";
+    });
+  });
 </script>
+
+{% endblock content %}
