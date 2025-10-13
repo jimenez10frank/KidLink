@@ -113,6 +113,12 @@ body {
     display: block;
 }
 
+
+.logout a:hover {
+    background-color: #e74c3c;
+    color: white;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
     .hamburger {
