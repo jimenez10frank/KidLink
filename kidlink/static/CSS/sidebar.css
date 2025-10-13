@@ -72,9 +72,11 @@ body {
     text-decoration: none;
     color: #000000;
     padding: 10px 20px;
+    margin-left: 10px;
+    width: 90%;
     display: flex;
     align-items: center;
-    border-radius: 5px;
+    border-radius: 10px;
     transition: background 0.3s;
 }
 
@@ -85,6 +87,7 @@ body {
 .sidebar-menu li a:hover,
 .sidebar-menu li.active a {
     background-color: #85BA49;
+    width: 90%;
 }
 
 /* Main content */
@@ -162,6 +165,11 @@ body {
         transform: translateY(0);
     }
 }
+
+.kidlink {
+    color: #85BA49;
+}
+
 
 /* -------- Smooth Page Transitions -------- */
 

@@ -1,8 +1,8 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from .models import Administrator, Youth, YouthActivity, Activity,Institute
-from .forms import YouthForm, YouthActivityForm, ActivityForm, InstituteForm
+from .models import Administrator, Youth, YouthActivity, Activity,Institute, YouthInstitute
+from .forms import YouthForm, YouthActivityForm, ActivityForm, InstituteForm, YouthInstituteForm
 from django.http import HttpResponseForbidden
 # Create your views here.
 
@@ -227,3 +227,46 @@ def youth_delete(request, pk):
         youth.delete()
         return redirect('youth_list')
     return render(request, 'administration/youth_confirm_delete.html', {'youth': youth})
+
+# Youth institute Administration
+@login_required
+def youth_institute_list(request):
+    youth_institutes = YouthInstitute.objects.all()
+    return render(request, 'youthInstitute/youth_institute_list.html', {'youth_institutes': youth_institutes})
+
+@login_required
+def youth_institute_create(request):
+    if not request.user.is_staff:
+        return HttpResponseForbidden("You are not authorized to add institutes.")
+    if request.method == "POST":
+        form = YouthInstituteForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('youth_institute_list')
+    else:
+        form = YouthInstituteForm()
+    return render(request, 'youthInstitute/youth_institute_create.html', {'form': form})
+
+@login_required
+def youth_institute_update(request, pk):
+    if not request.user.is_staff:
+        return HttpResponseForbidden("You are not authorized to edit institutes.")
+    institute = get_object_or_404(YouthInstitute, pk=pk)
+    if request.method == "POST":
+        form = YouthInstituteForm(request.POST, instance=institute)
+        if form.is_valid():
+            form.save()
+            return redirect('youth_institute_list')
+    else:
+        form = YouthInstituteForm(instance=institute)
+    return render(request, 'youthInstitute/youth_institute_form.html', {'form': form})
+
+@login_required
+def youth_institute_delete(request, pk):
+    if not request.user.is_staff:
+        return HttpResponseForbidden("You are not authorized to delete institutes.")
+    institute = get_object_or_404(YouthInstitute, pk=pk)
+    if request.method == "POST":
+        institute.delete()
+        return redirect('youth_institute_list')
+    return render(request, 'youthInstitute/youth_institute_confirm_delete.html', {'institute': institute})

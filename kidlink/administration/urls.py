@@ -26,6 +26,9 @@ urlpatterns = [
     path("institutes/add/", views.add_institute, name="add_institute"),
     path("institutes/<int:pk>/institute_edit/", views.update_institute, name="update_institute"),
     path("institutes/<int:pk>/delete_institute/", views.delete_institute, name="delete_institute"),
-
-    
+    #youth institute URLs
+    path("youth/institutes/", views.youth_institute_list, name="youth_institute_list"),
+    path("youth/institutes/add/", views.youth_institute_create, name="youth_institute_create"),
+    path("youth/institutes/<int:pk>/edit/", views.youth_institute_update, name="youth_institute_update"),
+    path("youth/institutes/<int:pk>/delete/", views.youth_institute_delete, name="youth_institute_delete"),
 ]

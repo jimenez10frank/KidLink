@@ -22,7 +22,7 @@
       <div class="sidebar-header">
         <h2>
           <a href="{% url 'admin_dashboard' %}" class="active">
-            Admin Dashboard
+            <span class="kidlink">KidLink</span> Dashboard
           </a>
         </h2>
       </div>
@@ -68,6 +68,27 @@
         >
           <a href="{% url 'youth_activity_create' %}">
             <i class="fas fa-tasks"></i> Create Youth Activity
+          </a>
+        </li>
+        <li
+          class="{% if request.path == '/administration/institutes/' %}active{% endif %}"
+        >
+          <a href="{% url 'institute_list' %}">
+            <i class="fas fa-school"></i> Institutes
+          </a>
+        </li>
+        <li
+          class="{% if request.path == '/administration/institutes/add/' %}active{% endif %}"
+        >
+          <a href="{% url 'add_institute' %}">
+            <i class="fas fa-plus-square"></i> Add Institute
+          </a>
+        </li>
+        <li
+          class="{% if request.path == '/administration/youth/institutes/' %}active{% endif %}"
+        >
+          <a href="{% url 'youth_institute_list' %}">
+            <i class="fas fa-users"></i> Youth Institutes
           </a>
         </li>
       </ul>

@@ -48,8 +48,8 @@ class YouthActivity(models.Model):
     youth = models.ForeignKey(Youth, on_delete=models.CASCADE)
     activity = models.ForeignKey(Activity, on_delete=models.CASCADE)
     participation_date = models.DateField(auto_now_add=True)
-    notes = models.TextField(blank=True)
-    result = models.CharField(max_length=100, blank=True)
+    notes = models.TextField(default="", blank=True)
+    result = models.CharField(max_length=100, default="", blank=True)
 
     def __str__(self):
         return f"{self.youth} → {self.activity}"
@@ -65,3 +65,12 @@ class Institute(models.Model):
     
     def __str__(self):
         return self.institute_name
+    
+class YouthInstitute(models.Model):
+    youth = models.ForeignKey(Youth, on_delete=models.CASCADE)
+    institute = models.ForeignKey(Institute, on_delete=models.CASCADE)
+    placement_date = models.DateField(auto_now_add=True)
+    status = models.CharField(max_length=100, blank=True)
+
+    def __str__(self):
+        return f"{self.youth} → {self.institute}"

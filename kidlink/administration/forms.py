@@ -1,5 +1,5 @@
 from django import forms
-from .models import Youth, YouthActivity, Activity, Institute
+from .models import Youth, YouthActivity, Activity, Institute, YouthInstitute
 
 class YouthForm(forms.ModelForm):
     class Meta:
@@ -24,3 +24,10 @@ class InstituteForm(forms.ModelForm):
     class Meta:
         model = Institute
         fields = ['institute_name', 'type', 'address', 'contact_person', 'phone', 'email']
+
+
+# Form for youth institutes can be added similarly
+class YouthInstituteForm(forms.ModelForm):
+    class Meta:
+        model = YouthInstitute
+        fields = ['youth', 'institute', 'status']

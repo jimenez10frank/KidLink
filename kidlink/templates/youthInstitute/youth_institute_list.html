@@ -1,0 +1,23 @@
+{% extends "sidebar.html" %} {% block content %}
+<h1>Youth Institute List</h1>
+<table>
+  <thead>
+    <tr>
+      <th>Youth</th>
+      <th>Institute</th>
+      <th>Placement Date</th>
+      <th>Status</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for youth_institute in youth_institutes %}
+    <tr>
+      <td>{{ youth_institute.youth }}</td>
+      <td>{{ youth_institute.institute }}</td>
+      <td>{{ youth_institute.placement_date }}</td>
+      <td>{{ youth_institute.status }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}
