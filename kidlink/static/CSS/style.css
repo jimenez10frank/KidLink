@@ -1,4 +1,4 @@
-.navbar{
+.navbar {
     display: flex;
     flex-direction: row;
     width: 100%;
@@ -6,7 +6,7 @@
     margin-top: 2%;
 }
 
-.navbar a{
+.navbar a {
     text-decoration: none;
     padding: 10px;
     background-color: aquamarine;
@@ -16,7 +16,7 @@
     transition: all 0.3s ease-in;
 }
 
-.navbar a:hover{
+.navbar a:hover {
     background-color: black;
     color: aquamarine;
 }

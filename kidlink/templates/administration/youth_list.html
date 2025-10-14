@@ -1,13 +1,83 @@
-{% extends "sidebar.html" %} {% block content %}
-<h1>Youth List</h1>
-<a href="{% url 'youth_create' %}">add New Youth</a>
-<ul>
-  {% for youth in youths %}
-  <li>
-    {{ youth.first_name }} {{youth.last_name}}
-    <a href="{% url 'youth_update' youth.pk %}">Edit</a> |
-    <a href="{% url 'youth_delete' youth.pk %}">Delete</a>
-  </li>
-  {% endfor %}
-</ul>
+{% extends "sidebar.html" %} {% load static %} {% block content %}
+<link rel="stylesheet" href="{% static 'css/youth_list.css' %}" />
+<link rel="stylesheet" href="{% static 'css/scrollbar.css' %}" />
+
+<div class="youth-list-container">
+  <div class="header-bar">
+    <h1><i class="fas fa-users"></i> Youth Overview</h1>
+    <a href="{% url 'youth_create' %}" class="btn-add">
+      <i class="fas fa-user-plus"></i> Add New Youth
+    </a>
+  </div>
+
+  {% if youths %}
+  <div class="table-wrapper">
+    <table class="youth-table">
+      <thead>
+        <tr>
+          <th><i class="fas fa-id-card"></i> Name</th>
+          <th><i class="fas fa-venus-mars"></i> Gender</th>
+          <th><i class="fas fa-birthday-cake"></i> Age</th>
+          <th><i class="fas fa-school"></i> Institute</th>
+          <th><i class="fas fa-running"></i> Activities</th>
+          <th><i class="fas fa-cog"></i> Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for youth in youths %}
+        <tr class="youth-row">
+          <td data-label="Name">
+            <div class="youth-name">
+              <div class="avatar">
+                {{ youth.first_name|first }}{{ youth.last_name|first }}
+              </div>
+              <div class="info">
+                <strong>{{ youth.first_name }} {{ youth.last_name }}</strong>
+                {% if youth.email %}
+                <p class="email">
+                  <i class="fas fa-envelope"></i> {{ youth.email }}
+                </p>
+                {% endif %}
+              </div>
+            </div>
+          </td>
+          <td data-label="Gender">{{ youth.gender|default:"-" }}</td>
+          <td data-label="Age">
+            {% if youth.date_of_birth %} {{ youth.date_of_birth|timesince }} old
+            {% else %} - {% endif %}
+          </td>
+          <td data-label="Institute">
+            {{ youth.institute.name|default:"Not Assigned" }}
+          </td>
+          <td data-label="Activities">
+            {{ youth.activities.count|default:"0" }}
+          </td>
+          <td data-label="Actions" class="actions">
+            <a
+              href="{% url 'youth_update' youth.pk %}"
+              class="btn edit"
+              title="Edit Youth"
+            >
+              <i class="fas fa-edit"></i>
+            </a>
+            <a
+              href="{% url 'youth_delete' youth.pk %}"
+              class="btn delete"
+              title="Delete Youth"
+            >
+              <i class="fas fa-trash-alt"></i>
+            </a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <div class="empty-message">
+    <i class="fas fa-info-circle"></i> No youth records found. Click “Add New
+    Youth” to create one.
+  </div>
+  {% endif %}
+</div>
 {% endblock %}

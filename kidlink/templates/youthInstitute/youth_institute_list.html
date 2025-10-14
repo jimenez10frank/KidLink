@@ -1,29 +1,62 @@
-{% extends "sidebar.html" %} {% block content %}
-<h1>Youth Institute List</h1>
-<table>
-  <thead>
-    <tr>
-      <th>Youth</th>
-      <th>Institute</th>
-      <th>Placement Date</th>
-      <th>Status</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for youth_institute in youth_institutes %}
-    <tr>
-      <td>{{ youth_institute.youth }}</td>
-      <td>{{ youth_institute.institute }}</td>
-      <td>{{ youth_institute.placement_date }}</td>
-      <td>{{ youth_institute.status }}</td>
-      <td>
-        <a href="{% url 'youth_institute_update' youth_institute.pk %}">Edit</a>
-        <a href="{% url 'youth_institute_delete' youth_institute.pk %}"
-          >Delete</a
-        >
-      </td>
-    </tr>
-    {% endfor %}
-  </tbody>
-</table>
+{% extends "sidebar.html" %} {% load static %} {% block content %}
+<link rel="stylesheet" href="{% static 'css/youth_institute.css' %}" />
+
+<div class="youth-institute-container">
+  <div class="header-bar">
+    <h1><i class="fas fa-school"></i> Youth Institute Overview</h1>
+    <a href="{% url 'youth_institute_create' %}" class="btn-add">
+      <i class="fas fa-plus-circle"></i> Add Youth Institute
+    </a>
+  </div>
+
+  {% if youth_institutes %}
+  <div class="table-wrapper">
+    <table class="institute-table">
+      <thead>
+        <tr>
+          <th><i class="fas fa-user"></i> Youth</th>
+          <th><i class="fas fa-building"></i> Institute</th>
+          <th><i class="fas fa-calendar-alt"></i> Placement Date</th>
+          <th><i class="fas fa-check-circle"></i> Status</th>
+          <th><i class="fas fa-cog"></i> Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for yi in youth_institutes %}
+        <tr class="institute-row">
+          <td data-label="Youth">
+            {{ yi.youth.first_name }} {{ yi.youth.last_name }}
+          </td>
+          <td data-label="Institute">{{ yi.institute.institute_name }}</td>
+          <td data-label="Placement Date">{{ yi.placement_date }}</td>
+          <td data-label="Status" class="status {{ yi.status|lower }}">
+            {{ yi.status }}
+          </td>
+          <td data-label="Actions" class="actions">
+            <a
+              href="{% url 'youth_institute_update' yi.pk %}"
+              class="btn edit"
+              title="Edit"
+            >
+              <i class="fas fa-edit"></i>
+            </a>
+            <a
+              href="{% url 'youth_institute_delete' yi.pk %}"
+              class="btn delete"
+              title="Delete"
+            >
+              <i class="fas fa-trash-alt"></i>
+            </a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <div class="empty-message">
+    <i class="fas fa-info-circle"></i> No youth institute records found.
+  </div>
+  {% endif %}
+</div>
 {% endblock %}
