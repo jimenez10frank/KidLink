@@ -1,0 +1,234 @@
+:root {
+    --bg: #f6f8ff;
+    --card: #ffffff;
+    --primary: #85BA49;
+    --muted: #6b7280;
+    --accent: #7EE7C4;
+    --glass: rgba(91, 107, 255, 0.08);
+    --radius: 12px;
+    --shadow: 0 6px 20px rgba(20, 24, 48, 0.08);
+}
+
+/* Container */
+.youth-container {
+    max-width: 980px;
+    margin: 28px auto;
+    padding: 24px;
+    background: linear-gradient(180deg, var(--bg), #ffffff);
+    border-radius: 16px;
+}
+
+/* Header */
+.youth-header {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    margin-bottom: 18px;
+}
+
+.youth-header .user-icon {
+    width: 64px;
+    height: 64px;
+    padding: 12px;
+    border-radius: 50%;
+    background: var(--glass);
+    color: var(--primary);
+    fill: none;
+    stroke: var(--primary);
+    stroke-width: 1.6;
+    flex: 0 0 64px;
+}
+
+.title-wrap h1 {
+    margin: 0;
+    font-size: 1.6rem;
+    color: #0f1724;
+}
+
+.subtitle {
+    margin: 4px 0 0;
+    font-size: 0.95rem;
+    color: var(--muted);
+}
+
+/* Form layout */
+.youth-form {
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 20px;
+    box-shadow: var(--shadow);
+    border: 1px solid rgba(12, 18, 36, 0.04);
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+}
+
+/* Responsive two-column on wider screens */
+@media (min-width:760px) {
+    .form-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 16px 20px;
+    }
+
+    /* Make full-width items (like textarea) span both columns by targeting p.fullwidth */
+    .form-grid p.fullwidth {
+        grid-column: 1 / -1;
+    }
+}
+
+/* Styling Django form rendering (p, label, input, select, textarea) */
+.youth-form p {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.youth-form label {
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: #111827;
+    font-size: 0.95rem;
+}
+
+.youth-form input[type="text"],
+.youth-form input[type="email"],
+.youth-form input[type="date"],
+.youth-form select,
+.youth-form textarea {
+    background: linear-gradient(180deg, #fff, #fbfdff);
+    border: 1px solid rgba(15, 23, 42, 0.08);
+    padding: 10px 12px;
+    border-radius: 10px;
+    outline: none;
+    transition: all .18s cubic-bezier(.2, .9, .3, 1);
+    box-shadow: 0 1px 0 rgba(9, 10, 13, 0.02) inset;
+    color: #0b1220;
+    font-size: 0.95rem;
+}
+
+.youth-form textarea {
+    min-height: 110px;
+    resize: vertical;
+}
+
+/* Focus states */
+.youth-form input:focus,
+.youth-form select:focus,
+.youth-form textarea:focus {
+    border-color: #85BA49;
+    box-shadow: 0 6px 20px rgba(91, 107, 255, 0.08);
+    transform: translateY(-1px);
+}
+
+/* Small helper text (if any) */
+.youth-form .helptext,
+.youth-form .errors {
+    margin-top: 6px;
+    font-size: 0.85rem;
+}
+
+/* Buttons */
+.form-actions {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    justify-content: flex-end;
+    margin-top: 18px;
+    flex-wrap: wrap;
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    border-radius: 10px;
+    cursor: pointer;
+    text-decoration: none;
+    font-weight: 600;
+    border: 1px solid transparent;
+    transition: all .16s ease;
+    color: #0b1220;
+}
+
+.btn .icon {
+    width: 16px;
+    height: 16px;
+    stroke: currentColor;
+    fill: none;
+    stroke-width: 1.6;
+}
+
+/* Primary button */
+.btn-primary {
+    background: linear-gradient(90deg, var(--primary), #85BA49);
+    color: white;
+    box-shadow: 0 8px 26px rgba(91, 107, 255, 0.16);
+    transform: translateY(0);
+}
+
+.btn-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 14px 40px rgba(91, 107, 255, 0.18);
+    filter: brightness(1.02);
+}
+
+/* Ghost/back button */
+.btn-ghost {
+    background: transparent;
+    color: var(--primary);
+    border: 1px solid rgba(91, 107, 255, 0.12);
+}
+
+.btn-ghost:hover {
+    background: rgba(91, 107, 255, 0.06);
+    transform: translateY(-2px);
+}
+
+/* Links and subtle interactions */
+a {
+    color: var(--primary);
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* Mobile tweaks */
+@media (max-width:420px) {
+    .youth-container {
+        padding: 16px;
+        margin: 16px;
+        border-radius: 12px;
+    }
+
+    .youth-header .user-icon {
+        width: 56px;
+        height: 56px;
+        padding: 10px;
+    }
+
+    .title-wrap h1 {
+        font-size: 1.25rem;
+    }
+
+    .form-actions {
+        justify-content: stretch;
+    }
+
+    .btn {
+        justify-content: center;
+        flex: 1 1 auto;
+    }
+}
+
+/* Accessibility: focus visible */
+.youth-form input:focus-visible,
+.youth-form button:focus-visible,
+.youth-form a:focus-visible {
+    outline: 3px solid rgba(91, 107, 255, 0.14);
+    outline-offset: 2px;
+}
