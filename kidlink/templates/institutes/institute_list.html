@@ -1,64 +1,76 @@
-<!DOCTYPE html>
-{% extends "sidebar.html" %} {% block content %}
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>List of Institutes</title>
-    {% load static %}
-    <link rel="stylesheet" href="{% static 'CSS/list.css' %}" />
-    <link rel="stylesheet" href="{% static 'CSS/style.css' %}" />
-  </head>
+{% extends "sidebar.html" %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/list.css' %}" />
+<link rel="stylesheet" href="{% static 'css/scrollbar.css' %}" />
 
-  <body>
-    <div class="navbar">
-      <a href="{% url 'youth_list' %}">Youth</a>
-      <a href="{% url 'activity_list' %}">Activities</a>
-      <a href="{% url 'institute_list' %}">Institutes</a>
-    </div>
+<div class="list-container">
+  <div class="header-bar">
+    <h1><i class="fas fa-school"></i> Institute Overview</h1>
+    <a href="{% url 'add_institute' %}" class="btn-add">
+      <i class="fas fa-plus-circle"></i> Add New Institute
+    </a>
+  </div>
 
-    <div class="container">
-      <h1>All Institutes</h1>
-
-      {% if institutes %}
-      <div class="list">
+  {% if institutes %}
+  <div class="table-wrapper">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th><i class="fas fa-university"></i> Name</th>
+          <th><i class="fas fa-building"></i> Type</th>
+          <th><i class="fas fa-map-marker-alt"></i> Address</th>
+          <th><i class="fas fa-user-tie"></i> Contact Person</th>
+          <th><i class="fas fa-phone"></i> Phone</th>
+          <th><i class="fas fa-envelope"></i> Email</th>
+          <th><i class="fas fa-cog"></i> Actions</th>
+        </tr>
+      </thead>
+      <tbody>
         {% for institute in institutes %}
-        <div class="card">
-          <h2>{{ institute.institute_name }}</h2>
-          <p class="desc"><strong>Type:</strong> {{ institute.type }}</p>
-          <div class="details">
-            <span><strong>Address:</strong> {{ institute.address }}</span>
-            <span
-              ><strong>Contact:</strong> {{ institute.contact_person }}</span
+        <tr class="record-row">
+          <td data-label="Name">
+            <div class="record-info">
+              <div class="avatar">
+                {{ institute.institute_name|slice:":2" }}
+              </div>
+              <div class="info">
+                <strong>{{ institute.institute_name }}</strong>
+              </div>
+            </div>
+          </td>
+          <td data-label="Type">{{ institute.type|default:"-" }}</td>
+          <td data-label="Address">{{ institute.address|default:"-" }}</td>
+          <td data-label="Contact Person">{{ institute.contact_person|default:"-" }}</td>
+          <td data-label="Phone">{{ institute.phone|default:"-" }}</td>
+          <td data-label="Email">{{ institute.email|default:"-" }}</td>
+
+          <td data-label="Actions" class="actions">
+            <a
+              href="{% url 'update_institute' institute.pk %}"
+              class="btn edit"
+              title="Edit Institute"
             >
-          </div>
-          <div class="details">
-            <span><strong>Phone:</strong> {{ institute.phone }}</span>
-            <span><strong>Email:</strong> {{ institute.email }}</span>
-          </div>
-          <div class="actions">
-            <a href="{% url 'update_institute' institute.pk %}" class="edit-btn"
-              >Edit</a
-            >
+              <i class="fas fa-edit"></i>
+            </a>
             <a
               href="{% url 'delete_institute' institute.pk %}"
-              class="delete-btn"
-              >Delete</a
+              class="btn delete"
+              title="Delete Institute"
             >
-          </div>
-        </div>
+              <i class="fas fa-trash-alt"></i>
+            </a>
+          </td>
+        </tr>
         {% endfor %}
-      </div>
-      {% else %}
-      <p class="no-data">No institutes found.</p>
-      {% endif %}
-
-      <div class="bottom-actions">
-        <a href="{% url 'add_institute' %}" class="add-btn"
-          >+ Add another institute</a
-        >
-      </div>
-    </div>
-  </body>
-</html>
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <div class="empty-message">
+    <i class="fas fa-info-circle"></i> No institutes found. Click “Add New
+    Institute” to create one.
+  </div>
+  {% endif %}
+</div>
 {% endblock %}

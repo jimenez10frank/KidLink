@@ -1,25 +1,53 @@
-{% extends "sidebar.html" %} {% block content %}
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>Add Activity</title>
-    {% load static %}
-  </head>
-  <body>
-    <div class="form-container">
-      <div class="rightPart">
-        <h1>Add an Activity</h1>
-        {% if error %}
-        <p style="color: red">{{ error }}</p>
-        {% endif %}
+{% extends "sidebar.html" %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'CSS/youth_form.css' %}" />
+<link rel="stylesheet" href="{% static 'CSS/scrollbar.css' %}" />
 
-        <form method="post">
-          {% csrf_token %} {{ form.as_p }}
-          <button type="submit">Add Activity</button>
-        </form>
-        <a href="{% url 'activity_list' %}" class="aLink">← Back to list</a>
-      </div>
+<div class="youth-container">
+  <header class="youth-header">
+    <!-- simple activity icon -->
+    <svg
+      class="icon user-icon"
+      viewBox="0 0 24 24"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <path d="M12 2l4 4-4 4-4-4 4-4zm0 16l4 4-4-4-4 4 4-4zm8-8l4 4-4-4-4 4 4-4zM4 10l4 4-4-4-4 4 4-4z" />
+    </svg>
+    <div class="title-wrap">
+      <h1>Activity Form</h1>
+      <p class="subtitle">
+        Add or update activity details — clean, consistent and responsive.
+      </p>
     </div>
-  </body>
-</html>
+  </header>
+
+  <form method="post" class="youth-form" novalidate>
+    {% csrf_token %}
+    <div class="form-grid">
+      {{ form.as_p }}
+    </div>
+
+    <div class="form-actions">
+      <button type="submit" class="btn btn-primary">
+        <!-- save icon -->
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path
+            d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2zM17 3v5h5"
+          />
+        </svg>
+        Save
+      </button>
+
+      <a href="{% url 'activity_list' %}" class="btn btn-ghost" title="Back to list">
+        <!-- back icon -->
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M15 18l-6-6 6-6" />
+        </svg>
+        Back to list
+      </a>
+    </div>
+  </form>
+</div>
 {% endblock content %}
