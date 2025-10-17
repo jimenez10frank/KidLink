@@ -1,29 +1,30 @@
 {% extends "sidebar.html" %}
 {% load static %}
 {% block content %}
-<link rel="stylesheet" href="{% static 'CSS/youth_form.css' %}" />
+<link rel="stylesheet" href="{% static 'CSS/form.css' %}" />
 <link rel="stylesheet" href="{% static 'CSS/scrollbar.css' %}" />
 
-<div class="youth-container">
-  <header class="youth-header">
-    <!-- simple activity icon -->
+<div class="form-container">
+  <header class="form-header">
+    <!-- activity icon -->
     <svg
-      class="icon user-icon"
+      class="icon-header"
       viewBox="0 0 24 24"
       aria-hidden="true"
       focusable="false"
     >
       <path d="M12 2l4 4-4 4-4-4 4-4zm0 16l4 4-4-4-4 4 4-4zm8-8l4 4-4-4-4 4 4-4zM4 10l4 4-4-4-4 4 4-4z" />
     </svg>
+
     <div class="title-wrap">
       <h1>Activity Form</h1>
       <p class="subtitle">
-        Add or update activity details — clean, consistent and responsive.
+        Add or update activity details — clean, consistent, and responsive.
       </p>
     </div>
   </header>
 
-  <form method="post" class="youth-form" novalidate>
+  <form method="post" class="base-form" novalidate>
     {% csrf_token %}
     <div class="form-grid">
       {{ form.as_p }}
