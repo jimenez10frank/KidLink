@@ -1,8 +1,26 @@
-{% extends "sidebar.html" %} {% block content %}
-<h1>Confirm Delete Youth Institute</h1>
-<p>Are you sure you want to delete this youth institute?</p>
-<form method="POST">
-  {% csrf_token %}
-  <button type="submit">Confirm</button>
-</form>
+{% extends "sidebar.html" %} {% load static %} {% block content %}
+<link
+  rel="stylesheet"
+  href="{% static 'css/administration/confirm_delete.css' %}"
+/>
+
+<div class="confirm-delete-wrap">
+  <div class="confirm-delete-card">
+    <h1>Confirm Delete</h1>
+    <p>Are you sure you want to delete this youth institute?</p>
+
+    <form method="POST">
+      {% csrf_token %}
+      <div class="confirm-delete-actions">
+        <button type="submit" class="btn btn-danger">Yes, delete</button>
+        <a class="btn btn-cancel" href="{% url 'youth_institute_list' %}"
+          >Cancel</a
+        >
+      </div>
+    </form>
+
+    <div class="confirm-delete-note">This action cannot be undone.</div>
+  </div>
+</div>
+
 {% endblock %}

@@ -1,0 +1,114 @@
+/* Reusable confirm-delete styles */
+:root {
+    --cd-bg: #fff;
+    --cd-card-bg: #fff;
+    --cd-border: #e0e6ef;
+    --cd-danger: #d9534f;
+    --cd-muted: #6c757d;
+    --cd-radius: 10px;
+    --cd-shadow: 0 6px 18px rgba(30, 41, 59, 0.08);
+    --cd-accent: #0d6efd;
+}
+
+/* Container that centers content on any page */
+.confirm-delete-wrap {
+    min-height: calc(100vh - 100px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 48px 20px;
+    background: linear-gradient(180deg, #f7f9fc 0%, #ffffff 100%);
+}
+
+.confirm-delete-card {
+    background: var(--cd-card-bg);
+    border: 1px solid var(--cd-border);
+    border-radius: var(--cd-radius);
+    box-shadow: var(--cd-shadow);
+    max-width: 680px;
+    width: 100%;
+    padding: 28px 28px;
+    text-align: center;
+}
+
+.confirm-delete-card h1 {
+    margin: 0 0 6px;
+    font-size: 20px;
+    color: #1f2937;
+    letter-spacing: -0.2px;
+}
+
+.confirm-delete-card p {
+    margin: 6px 0 20px;
+    color: var(--cd-muted);
+    font-size: 15px;
+}
+
+/* Action row */
+.confirm-delete-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    align-items: center;
+    margin-top: 8px;
+}
+
+.confirm-delete-actions .btn {
+    padding: 10px 16px;
+    border-radius: 8px;
+    border: 1px solid transparent;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 14px;
+    transition: transform 120ms ease, box-shadow 120ms ease, opacity 120ms ease;
+}
+
+.confirm-delete-actions .btn:active {
+    transform: translateY(1px)
+}
+
+/* Danger button */
+.btn-danger {
+    background: linear-gradient(180deg, #ff6b6b 0%, #d9534f 100%);
+    color: white;
+    border-color: rgba(0, 0, 0, 0.04);
+    box-shadow: 0 6px 18px rgba(217, 83, 79, 0.12);
+}
+
+.btn-danger:hover {
+    opacity: 0.95
+}
+
+/* Secondary / cancel */
+.btn-cancel {
+    background: transparent;
+    color: #374151;
+    border: 1px solid var(--cd-border);
+}
+
+.btn-cancel:hover {
+    background: #f3f4f6
+}
+
+/* Small helper text */
+.confirm-delete-note {
+    margin-top: 12px;
+    color: #9aa3b2;
+    font-size: 13px;
+}
+
+/* Responsive tweaks */
+@media (max-width: 520px) {
+    .confirm-delete-card {
+        padding: 20px;
+        border-radius: 12px;
+    }
+
+    .confirm-delete-actions {
+        flex-direction: column
+    }
+
+    .confirm-delete-actions .btn {
+        width: 100%
+    }
+}

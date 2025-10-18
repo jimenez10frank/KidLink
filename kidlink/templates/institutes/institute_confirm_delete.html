@@ -1,9 +1,24 @@
-<h1>Confirm Delete</h1>
-<p>
-  Are you sure you want to delete {{ activity.institute_name }}?
-</p>
-<form method="post">
-  {% csrf_token %}
-  <button type="submit">Yes, delete</button>
-</form>
-<a href="{% url 'institute_list' %}">Cancel</a>
+{% extends "sidebar.html" %} {% load static %} {% block content %}
+<link
+  rel="stylesheet"
+  href="{% static 'css/administration/confirm_delete.css' %}"
+/>
+
+<div class="confirm-delete-wrap">
+  <div class="confirm-delete-card">
+    <h1>Confirm Delete</h1>
+    <p>Are you sure you want to delete {{ activity.institute_name }}?</p>
+
+    <form method="post">
+      {% csrf_token %}
+      <div class="confirm-delete-actions">
+        <button type="submit" class="btn btn-danger">Yes, delete</button>
+        <a class="btn btn-cancel" href="{% url 'institute_list' %}">Cancel</a>
+      </div>
+    </form>
+
+    <div class="confirm-delete-note">This action cannot be undone.</div>
+  </div>
+</div>
+
+{% endblock %}
