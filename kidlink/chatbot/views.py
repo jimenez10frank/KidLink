@@ -53,7 +53,26 @@ STRICT RULES:
             temperature=0.5,  # Lower temperature for more focused responses
         )
         
+        # Access response data AFTER the API call is complete
         ai_response = response.choices[0].message.content
+        
+        # Extract usage information from response
+        total_tokens = response.usage.total_tokens
+        prompt_tokens = response.usage.prompt_tokens
+        completion_tokens = response.usage.completion_tokens
+        
+        # Calculate cost (GPT-3.5-turbo pricing: $0.0015 per 1K input tokens, $0.002 per 1K output tokens)
+        input_cost = (prompt_tokens / 1000) * 0.0015
+        output_cost = (completion_tokens / 1000) * 0.002
+        total_cost = input_cost + output_cost
+        
+        # Print to console for debugging
+        print(f"\n=== OpenAI API Usage ===")
+        print(f"Prompt tokens: {prompt_tokens}")
+        print(f"Completion tokens: {completion_tokens}")
+        print(f"Total tokens: {total_tokens}")
+        print(f"Cost: ${total_cost:.6f}")
+        print("========================\n")
         
         # Optional: Add content filtering
         # Block responses that might be too generic or off-topic
@@ -76,7 +95,9 @@ STRICT RULES:
             ChatMessage.objects.create(
                 message=user_message,
                 response=ai_response,
-                user=request.user
+                user=request.user,
+                tokens_used=total_tokens,
+                cost=total_cost
             )
         
         return JsonResponse({'response': ai_response})
