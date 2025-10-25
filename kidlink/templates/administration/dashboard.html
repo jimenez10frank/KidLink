@@ -1,156 +1,417 @@
 {% extends "sidebar.html" %} {% load static %} {% block content %}
 <link
   rel="stylesheet"
+  href="https://fonts.googleapis.com/css2?family=Urbanist:wght@300;400;500;600;700&display=swap"
+/>
+<link
+  rel="stylesheet"
   href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
 />
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<link rel="stylesheet" href="{% static 'css/dashboard.css' %}" />
+<link rel="stylesheet" href="{% static 'CSS/dashboard.css' %}" />
 
 <div class="dashboard-container">
-  <!-- Top Row: Small Stats Cards -->
+  <!-- Header -->
+  <div class="dashboard-header">
+    <h1><i class="fas fa-chart-line"></i> Administrator Analytics Dashboard</h1>
+    <p class="last-updated">Last updated: <span id="updateTime"></span></p>
+  </div>
+
+  <!-- Overview Cards -->
   <div class="stats-cards">
-    <div class="card">
-      <i class="fas fa-users"></i>
-      <p>Total Youth</p>
-      <span>120</span>
+    <div class="stat-card">
+      <div class="stat-icon">
+        <i class="fas fa-users"></i>
+      </div>
+      <div class="stat-content">
+        <h3>{{ total_youth }}</h3>
+        <p>Total Youth Enrolled</p>
+      </div>
     </div>
-    <div class="card">
-      <i class="fas fa-calendar-check"></i>
-      <p>Active Activities</p>
-      <span>35</span>
+    <div class="stat-card">
+      <div class="stat-icon">
+        <i class="fas fa-calendar-check"></i>
+      </div>
+      <div class="stat-content">
+        <h3>{{ total_activities }}</h3>
+        <p>Total Activities</p>
+      </div>
     </div>
-    <div class="card">
-      <i class="fas fa-school"></i>
-      <p>Institutes</p>
-      <span>8</span>
+    <div class="stat-card">
+      <div class="stat-icon">
+        <i class="fas fa-chart-area"></i>
+      </div>
+      <div class="stat-content">
+        <h3>{{ monthly_participation_rate }}</h3>
+        <p>Monthly Participation</p>
+      </div>
     </div>
-    <div class="card">
-      <i class="fas fa-bullseye"></i>
-      <p>Participations</p>
-      <span>200</span>
-    </div>
-    <div class="card">
-      <i class="fas fa-calendar-alt"></i>
-      <p>Upcoming Events</p>
-      <span>5</span>
-    </div>
-    <div class="card">
-      <i class="fas fa-star"></i>
-      <p>Top Youth</p>
-      <span>Jane Doe</span>
-    </div>
-  </div>
-
-  <!-- Middle Row: Mini Charts -->
-  <div class="charts-container">
-    <div class="chart-box">
-      <h5><i class="fas fa-chart-line"></i> Youth per Activity</h5>
-      <canvas id="youthActivityChart" height="100"></canvas>
-    </div>
-    <div class="chart-box">
-      <h5><i class="fas fa-venus-mars"></i> Gender Distribution</h5>
-      <canvas id="genderChart" height="100"></canvas>
-    </div>
-    <div class="chart-box">
-      <h5><i class="fas fa-calendar-check"></i> Activities Completion</h5>
-      <canvas id="activityCompletionChart" height="100"></canvas>
+    <div class="stat-card">
+      <div class="stat-icon">
+        <i class="fas fa-school"></i>
+      </div>
+      <div class="stat-content">
+        <h3>{{ total_institutes }}</h3>
+        <p>Active Institutes</p>
+      </div>
     </div>
   </div>
 
-  <!-- Bottom Row: Recent Activities -->
-  <div class="recent-activities">
-    <h5><i class="fas fa-history"></i> Recent Activities</h5>
-    <ul>
-      <li>
-        <img src="{% static 'img/youth1.jpg' %}" alt="John" /> John Doe joined
-        "Coding Club"
-      </li>
-      <li>
-        <img src="{% static 'img/youth2.jpg' %}" alt="Mary" /> Mary Smith
-        enrolled in "Music Class"
-      </li>
-      <li>
-        <img src="{% static 'img/institute.jpg' %}" alt="Institute" /> New
-        Institute "Bright Futures" added
-      </li>
-      <li>
-        <img src="{% static 'img/youth3.jpg' %}" alt="James" /> James Lee joined
-        "Sports Club"
-      </li>
-    </ul>
+  <!-- Charts Section -->
+  <div class="charts-row">
+    <!-- Monthly Participation Chart -->
+    <div class="chart-card">
+      <div class="chart-header">
+        <h3><i class="fas fa-chart-bar"></i> Monthly Participation Trends</h3>
+        <div class="chart-filter">
+          <select id="timeRange" class="filter-select">
+            <option value="12">Last 12 Months</option>
+            <option value="6">Last 6 Months</option>
+            <option value="3">Last 3 Months</option>
+          </select>
+        </div>
+      </div>
+      <div style="height: 400px; position: relative">
+        <canvas id="monthlyChart"></canvas>
+      </div>
+    </div>
+
+    <!-- Activity Category Chart -->
+    <div class="chart-card">
+      <div class="chart-header">
+        <h3><i class="fas fa-pie-chart"></i> Participation by Activity</h3>
+        <button class="refresh-btn" onclick="refreshCharts()">
+          <i class="fas fa-sync-alt"></i> Refresh
+        </button>
+      </div>
+      <div style="height: 400px; position: relative">
+        <canvas id="activityChart"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- Export & Reports Section -->
+  <div class="reports-section">
+    <h2><i class="fas fa-file-export"></i> Reports & Data Export</h2>
+    <div class="export-buttons">
+      <button class="export-btn" onclick="exportData('excel')">
+        <i class="fas fa-file-excel"></i>
+        <span>Export Youth Data (Excel)</span>
+      </button>
+      <button class="export-btn" onclick="exportData('pdf')">
+        <i class="fas fa-file-pdf"></i>
+        <span>Export Activities (PDF)</span>
+      </button>
+      <button class="export-btn" onclick="exportData('full')">
+        <i class="fas fa-file-alt"></i>
+        <span>Export Full Report</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Automated Reports Section -->
+  <div class="automated-reports">
+    <div class="automated-header">
+      <h2><i class="fas fa-paper-plane"></i> Automatic Email Reports</h2>
+      <div class="status-badge" id="reportStatus">
+        <i class="fas fa-pause-circle"></i> Paused
+      </div>
+    </div>
+    <p class="automated-desc">
+      Schedule recurring reports to be sent automatically via email.
+    </p>
+    <div class="schedule-form">
+      <div class="form-group">
+        <label for="reportFrequency">
+          <i class="fas fa-clock"></i> Frequency
+        </label>
+        <select id="reportFrequency" class="form-select">
+          <option value="daily">Daily</option>
+          <option value="weekly">Weekly</option>
+          <option value="monthly" selected>Monthly</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="recipientEmail">
+          <i class="fas fa-envelope"></i> Recipient Email
+        </label>
+        <input
+          type="email"
+          id="recipientEmail"
+          class="form-input"
+          placeholder="admin@kidlink.org"
+        />
+      </div>
+      <button class="schedule-btn" onclick="scheduleReport()">
+        <i class="fas fa-calendar-check"></i> Schedule Report
+      </button>
+    </div>
+  </div>
+
+  <!-- Recent Activity Log -->
+  <div class="activity-log">
+    <h3><i class="fas fa-history"></i> Recent Activity Log</h3>
+    <div class="activity-list">
+      {% for activity in recent_activities %}
+      <div class="activity-item">
+        <div class="activity-icon">
+          <i class="fas fa-user-plus"></i>
+        </div>
+        <div class="activity-details">
+          <strong
+            >{{ activity.youth.first_name}} {{activity.youth.last_name}}</strong
+            
+          joined
+          <strong>{{ activity.activity.activity_name }}</strong>
+        </div>
+        <div class="activity-date">
+          {{ activity.participation_date|date:"M d, Y" }}
+        </div>
+      </div>
+      {% empty %}
+      <div class="no-activity">No recent activities</div>
+      {% endfor %}
+    </div>
   </div>
 </div>
 
 <script>
-  /* Mini Bar Chart */
-  const ctx = document.getElementById("youthActivityChart").getContext("2d");
-  new Chart(ctx, {
-    type: "bar",
-    data: {
-      labels: ["Sports", "Arts", "Music", "Science", "Coding"],
-      datasets: [
-        {
-          label: "Youth",
-          data: [25, 15, 30, 20, 30],
-          backgroundColor: "#85BA49",
-          borderRadius: 4,
-          barPercentage: 0.4,
-        },
-      ],
+  // Update timestamp
+  document.getElementById("updateTime").textContent =
+    new Date().toLocaleTimeString();
+
+     // Monthly Participation Chart
+   const ctx1 = document.getElementById("monthlyChart");
+   const monthlyChart = new Chart(ctx1, {
+     type: "bar",
+     data: {
+       labels: {{ monthly_labels|safe }},
+               datasets: [
+                    {
+            label: "Participants",
+            data: {{ monthly_data|safe }},
+            backgroundColor: (ctx) => {
+              const gradient = ctx.chart.ctx.createLinearGradient(0, 0, 0, 400);
+              gradient.addColorStop(0, "rgba(133, 186, 73, 0.9)");
+              gradient.addColorStop(1, "rgba(133, 186, 73, 0.4)");
+              return gradient;
+            },
+            borderColor: "rgba(133, 186, 73, 1)",
+            borderWidth: 2,
+            borderRadius: 12,
+            borderSkipped: false,
+            barThickness: 'flex',
+            maxBarThickness: 50,
+          },
+       ],
     },
     options: {
       responsive: true,
-      plugins: { legend: { display: false } },
-      scales: { y: { display: false }, x: { grid: { display: false } } },
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: "rgba(255, 255, 255, 0.95)",
+          borderColor: "rgba(133, 186, 73, 0.8)",
+          borderWidth: 2,
+          padding: 15,
+          cornerRadius: 12,
+          displayColors: false,
+          titleColor: "#1a1a1a",
+          bodyColor: "#374151",
+          titleFont: { size: 14, weight: "bold" },
+          bodyFont: { size: 13 },
+          boxPadding: 8,
+        },
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          grid: {
+            color: "rgba(0, 0, 0, 0.05)",
+            lineWidth: 1
+          },
+          ticks: {
+            stepSize: 1,
+            color: "#6b7280",
+            font: { size: 11, family: "'Urbanist', sans-serif" }
+          },
+          border: {
+            display: false
+          }
+        },
+        x: {
+          grid: { display: false },
+          ticks: {
+            color: "#6b7280",
+            font: { size: 11, family: "'Urbanist', sans-serif" }
+          },
+          border: {
+            display: false
+          }
+        },
+      },
+             animation: {
+         duration: 1200,
+         easing: "easeOutQuart",
+       },
+       layout: {
+         padding: {
+           top: 20,
+           bottom: 10
+         }
+       },
+       interaction: {
+         intersect: false,
+         mode: 'index'
+       }
     },
   });
 
-  /* Mini Donut Chart */
-  const ctx2 = document.getElementById("genderChart").getContext("2d");
-  new Chart(ctx2, {
-    type: "doughnut",
-    data: {
-      labels: ["Male", "Female", "Other"],
-      datasets: [
-        {
-          data: [60, 55, 5],
-          backgroundColor: ["#85BA49", "#333", "#666"],
-          borderWidth: 0,
-        },
-      ],
+     // Activity Category Chart
+   const ctx2 = document.getElementById("activityChart");
+   const activityChart = new Chart(ctx2, {
+     type: "doughnut",
+     data: {
+       labels: {{ activity_names|safe }},
+               datasets: [
+          {
+            data: {{ activity_counts|safe }},
+                       backgroundColor: [
+              "rgba(133, 186, 73, 0.9)",  // Green
+              "rgba(59, 130, 246, 0.9)",  // Blue
+              "rgba(251, 146, 60, 0.9)",  // Orange
+              "rgba(139, 92, 246, 0.9)",  // Purple
+              "rgba(236, 72, 153, 0.9)",  // Pink
+              "rgba(34, 197, 94, 0.9)",   // Emerald
+              "rgba(249, 115, 22, 0.9)",  // Amber
+              "rgba(168, 85, 247, 0.9)",  // Violet
+            ],
+           borderWidth: 3,
+           borderColor: "#ffffff",
+           hoverOffset: 8,
+         },
+       ],
     },
     options: {
       responsive: true,
+      maintainAspectRatio: false,
       plugins: {
-        legend: { position: "bottom", labels: { boxWidth: 10, padding: 5 } },
+        legend: {
+          position: "bottom",
+          labels: {
+            padding: 20,
+            font: { size: 13, family: "'Urbanist', sans-serif" },
+            boxWidth: 15,
+            boxHeight: 15,
+            color: "#374151",
+            usePointStyle: true,
+          },
+        },
+        tooltip: {
+          backgroundColor: "rgba(255, 255, 255, 0.95)",
+          borderColor: "rgba(133, 186, 73, 0.8)",
+          borderWidth: 2,
+          padding: 15,
+          cornerRadius: 12,
+          callbacks: {
+            title: function(context) {
+              return context[0].label;
+            },
+            label: function (context) {
+              let label = context.label || "";
+              let value = context.parsed || 0;
+              let total = context.dataset.data.reduce((a, b) => a + b, 0);
+              let percentage =
+                total > 0 ? ((value / total) * 100).toFixed(1) : 0;
+              return value + " participants (" + percentage + "%)";
+            },
+          },
+          titleColor: "#1a1a1a",
+          bodyColor: "#374151",
+          titleFont: { size: 14, weight: "bold" },
+          bodyFont: { size: 13 },
+          boxPadding: 8,
+        },
       },
-      cutout: "70%",
+             cutout: "65%",
+       animation: {
+         animateRotate: true,
+         animateScale: true,
+         duration: 1500,
+         easing: "easeInOutQuart",
+       },
+       layout: {
+         padding: 15
+       },
+       interaction: {
+         intersect: false
+       }
     },
   });
 
-  /* Mini Doughnut Chart for Activity Completion */
-  const ctx3 = document
-    .getElementById("activityCompletionChart")
-    .getContext("2d");
-  new Chart(ctx3, {
-    type: "doughnut",
-    data: {
-      labels: ["Completed", "Pending"],
-      datasets: [
-        {
-          data: [70, 30],
-          backgroundColor: ["#85BA49", "#ccc"],
-          borderWidth: 0,
-        },
-      ],
-    },
-    options: {
-      responsive: true,
-      plugins: {
-        legend: { position: "bottom", labels: { boxWidth: 10, padding: 5 } },
-      },
-      cutout: "70%",
-    },
-  });
+     // Export functions
+   function exportData(type) {
+     const btn = event.target.closest(".export-btn");
+     const icon = btn.querySelector("i");
+
+     icon.classList.remove("fa-file-excel", "fa-file-pdf", "fa-file-alt");
+     icon.classList.add("fa-spinner", "fa-spin");
+
+     let url = "";
+     if (type === "excel") {
+       url = "{% url 'export_youth_excel' %}";
+     } else if (type === "pdf") {
+       url = "{% url 'export_activities_pdf' %}";
+     } else {
+       url = "{% url 'export_full_report' %}";
+     }
+
+     // Directly navigate to the export URL
+     window.location.href = url;
+   }
+
+  // Schedule report
+  function scheduleReport() {
+    const frequency = document.getElementById("reportFrequency").value;
+    const email = document.getElementById("recipientEmail").value;
+
+    if (!email) {
+      alert("Please enter a recipient email address");
+      return;
+    }
+
+    // Show toast notification
+    showToast(
+      "Report scheduled successfully! You will receive " +
+        frequency +
+        " reports at " +
+        email
+    );
+
+    // Update status badge
+    const statusBadge = document.getElementById("reportStatus");
+    statusBadge.innerHTML = '<i class="fas fa-play-circle"></i> Active';
+    statusBadge.classList.add("active");
+  }
+
+  // Refresh charts
+  function refreshCharts() {
+    location.reload();
+  }
+
+  // Show toast notification
+  function showToast(message) {
+    const toast = document.createElement("div");
+    toast.className = "toast";
+    toast.innerHTML = '<i class="fas fa-check-circle"></i> ' + message;
+    document.body.appendChild(toast);
+
+    setTimeout(() => toast.classList.add("show"), 10);
+    setTimeout(() => {
+      toast.classList.remove("show");
+      setTimeout(() => toast.remove(), 300);
+    }, 3000);
+  }
 </script>
 {% endblock %}

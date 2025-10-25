@@ -3,7 +3,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from .models import Administrator, Youth, YouthActivity, Activity,Institute, YouthInstitute
 from .forms import YouthForm, YouthActivityForm, ActivityForm, InstituteForm, YouthInstituteForm
-from django.http import HttpResponseForbidden
+from django.http import HttpResponseForbidden, HttpResponse
 # Create your views here.
 
 # administration Authentication
@@ -34,7 +34,57 @@ def admin_logout(request):
 
 @login_required
 def admin_dashboard(request):
-    return render(request, "administration/dashboard.html")
+    from django.db.models import Count
+    from datetime import datetime, timedelta
+    import json
+    
+    # Calculate real statistics
+    total_youth = Youth.objects.count()
+    total_activities = Activity.objects.count()
+    total_institutes = Institute.objects.count()
+    
+    # Calculate monthly participation rate (last 30 days)
+    last_30_days = datetime.now() - timedelta(days=30)
+    monthly_participations = YouthActivity.objects.filter(
+        participation_date__gte=last_30_days
+    ).count()
+    
+    # Get participation trends for the last 12 months
+    monthly_data = {}
+    for i in range(11, -1, -1):
+        month_start = datetime.now().replace(day=1) - timedelta(days=30*i)
+        month_end = month_start + timedelta(days=30)
+        count = YouthActivity.objects.filter(
+            participation_date__gte=month_start.date(),
+            participation_date__lt=month_end.date()
+        ).count()
+        month_label = month_start.strftime('%b')
+        monthly_data[month_label] = count
+    
+    # Get participation by activity category
+    activity_data = YouthActivity.objects.values('activity__activity_name').annotate(
+        count=Count('id')
+    ).order_by('-count')[:5]
+    
+    activity_names = [item['activity__activity_name'] for item in activity_data] if activity_data else ['No Activities']
+    activity_counts = [item['count'] for item in activity_data] if activity_data else [1]
+    
+    # Recent activities for the sidebar
+    recent_activities = YouthActivity.objects.select_related('youth', 'activity').order_by('-participation_date')[:10]
+    
+    context = {
+        'total_youth': total_youth,
+        'total_activities': total_activities,
+        'total_institutes': total_institutes,
+        'monthly_participation_rate': monthly_participations,
+        'monthly_labels': json.dumps(list(monthly_data.keys())),
+        'monthly_data': json.dumps(list(monthly_data.values())),
+        'activity_names': json.dumps(activity_names),
+        'activity_counts': json.dumps(activity_counts),
+        'recent_activities': recent_activities,
+    }
+    
+    return render(request, "administration/dashboard.html", context)
 
 
 
@@ -270,3 +320,228 @@ def youth_institute_delete(request, pk):
         institute.delete()
         return redirect('youth_institute_list')
     return render(request, 'youthInstitute/youth_institute_confirm_delete.html', {'institute': institute})
+
+# Export Functions
+@login_required
+def export_youth_excel(request):
+    """Export youth data to Excel format"""
+    if not request.user.is_staff:
+        return HttpResponseForbidden("You are not authorized to export data.")
+    
+    from openpyxl import Workbook
+    from django.http import HttpResponse
+    from datetime import datetime
+    
+    # Create workbook and worksheet
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Youth Data"
+    
+    # Add headers
+    headers = ['First Name', 'Last Name', 'Date of Birth', 'Gender', 'Status', 'Registration Due']
+    ws.append(headers)
+    
+    # Style headers
+    from openpyxl.styles import Font, PatternFill, Alignment
+    header_fill = PatternFill(start_color="85BA49", end_color="85BA49", fill_type="solid")
+    header_font = Font(bold=True, color="FFFFFF")
+    
+    for col in range(1, len(headers) + 1):
+        cell = ws.cell(row=1, column=col)
+        cell.fill = header_fill
+        cell.font = header_font
+        cell.alignment = Alignment(horizontal="center")
+    
+    # Add data
+    youths = Youth.objects.all()
+    for youth in youths:
+        ws.append([
+            youth.first_name,
+            youth.last_name,
+            youth.date_of_birth.strftime('%Y-%m-%d'),
+            youth.gender,
+            youth.status,
+            youth.registration_due.strftime('%Y-%m-%d')
+        ])
+    
+    # Auto-adjust column widths
+    for column in ws.columns:
+        max_length = 0
+        column_letter = column[0].column_letter
+        for cell in column:
+            try:
+                if len(str(cell.value)) > max_length:
+                    max_length = len(cell.value)
+            except:
+                pass
+        adjusted_width = min(max_length + 2, 50)
+        ws.column_dimensions[column_letter].width = adjusted_width
+    
+    # Create response
+    response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    response['Content-Disposition'] = f'attachment; filename="youth_data_{datetime.now().strftime("%Y%m%d")}.xlsx"'
+    wb.save(response)
+    return response
+
+@login_required
+def export_activities_pdf(request):
+    """Export activities data to PDF format"""
+    if not request.user.is_staff:
+        return HttpResponseForbidden("You are not authorized to export data.")
+    
+    from reportlab.lib.pagesizes import letter, A4
+    from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer
+    from reportlab.lib import colors
+    from reportlab.lib.styles import getSampleStyleSheet
+    from reportlab.lib.units import inch
+    from django.http import HttpResponse
+    from datetime import datetime
+    
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="activities_report_{datetime.now().strftime("%Y%m%d")}.pdf"'
+    
+    # Create PDF
+    doc = SimpleDocTemplate(response, pagesize=A4)
+    story = []
+    
+    # Styles
+    styles = getSampleStyleSheet()
+    title_style = styles['Title']
+    title_style.textColor = colors.HexColor('#85BA49')
+    
+    # Title
+    title = Paragraph("KidLink Activities Report", title_style)
+    story.append(title)
+    story.append(Spacer(1, 0.2*inch))
+    
+    # Activity data
+    activities = Activity.objects.all()
+    
+    # Prepare table data
+    data = [['Activity Name', 'Description', 'Start Date', 'End Date', 'Location']]
+    
+    for activity in activities:
+        desc = activity.description[:50] + '...' if len(activity.description) > 50 else activity.description
+        data.append([
+            activity.activity_name,
+            desc,
+            activity.start_date.strftime('%Y-%m-%d'),
+            activity.end_date.strftime('%Y-%m-%d'),
+            activity.location
+        ])
+    
+    # Create table
+    table = Table(data, colWidths=[2*inch, 2*inch, 1*inch, 1*inch, 1.5*inch])
+    table.setStyle(TableStyle([
+        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#85BA49')),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+        ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('FONTSIZE', (0, 0), (-1, 0), 10),
+        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+        ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
+        ('GRID', (0, 0), (-1, -1), 1, colors.black)
+    ]))
+    
+    story.append(table)
+    
+    # Build PDF
+    doc.build(story)
+    return response
+
+@login_required
+def export_full_report(request):
+    """Export full comprehensive report"""
+    if not request.user.is_staff:
+        return HttpResponseForbidden("You are not authorized to export data.")
+    
+    from reportlab.lib.pagesizes import A4
+    from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer, PageBreak
+    from reportlab.lib import colors
+    from reportlab.lib.styles import getSampleStyleSheet
+    from reportlab.lib.units import inch
+    from django.http import HttpResponse
+    from datetime import datetime
+    
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="full_report_{datetime.now().strftime("%Y%m%d")}.pdf"'
+    
+    # Create PDF
+    doc = SimpleDocTemplate(response, pagesize=A4)
+    story = []
+    
+    # Styles
+    styles = getSampleStyleSheet()
+    title_style = styles['Title']
+    title_style.textColor = colors.HexColor('#85BA49')
+    heading_style = styles['Heading1']
+    
+    # Title
+    title = Paragraph("KidLink Comprehensive Report", title_style)
+    story.append(title)
+    story.append(Spacer(1, 0.3*inch))
+    
+    # Statistics
+    total_youth = Youth.objects.count()
+    total_activities = Activity.objects.count()
+    total_institutes = Institute.objects.count()
+    total_participations = YouthActivity.objects.count()
+    
+    stats_data = [
+        ['Metric', 'Count'],
+        ['Total Youth Enrolled', str(total_youth)],
+        ['Total Activities', str(total_activities)],
+        ['Total Institutes', str(total_institutes)],
+        ['Total Participations', str(total_participations)]
+    ]
+    
+    stats_table = Table(stats_data, colWidths=[3*inch, 1*inch])
+    stats_table.setStyle(TableStyle([
+        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#85BA49')),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+        ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('FONTSIZE', (0, 0), (-1, 0), 12),
+        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+        ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
+        ('GRID', (0, 0), (-1, -1), 1, colors.black)
+    ]))
+    
+    story.append(Paragraph("Summary Statistics", heading_style))
+    story.append(Spacer(1, 0.1*inch))
+    story.append(stats_table)
+    story.append(PageBreak())
+    
+    # Youth List
+    youths = Youth.objects.all()[:20]  # Limit to first 20 for PDF
+    youth_data = [['First Name', 'Last Name', 'Date of Birth', 'Gender', 'Status']]
+    
+    for youth in youths:
+        youth_data.append([
+            youth.first_name,
+            youth.last_name,
+            youth.date_of_birth.strftime('%Y-%m-%d'),
+            youth.gender,
+            youth.status
+        ])
+    
+    youth_table = Table(youth_data, colWidths=[1.2*inch, 1.2*inch, 1*inch, 0.8*inch, 1.2*inch])
+    youth_table.setStyle(TableStyle([
+        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#85BA49')),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+        ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('FONTSIZE', (0, 0), (-1, 0), 10),
+        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+        ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
+        ('GRID', (0, 0), (-1, -1), 1, colors.black),
+        ('FONTSIZE', (0, 1), (-1, -1), 8)
+    ]))
+    
+    story.append(Paragraph("Youth List", heading_style))
+    story.append(Spacer(1, 0.1*inch))
+    story.append(youth_table)
+    
+    # Build PDF
+    doc.build(story)
+    return response

@@ -31,4 +31,8 @@ urlpatterns = [
     path("youth/institutes/add/", views.youth_institute_create, name="youth_institute_create"),
     path("youth/institutes/<int:pk>/edit/", views.youth_institute_update, name="youth_institute_update"),
     path("youth/institutes/<int:pk>/delete/", views.youth_institute_delete, name="youth_institute_delete"),
+    # Export URLs
+    path("export/youth/excel/", views.export_youth_excel, name="export_youth_excel"),
+    path("export/activities/pdf/", views.export_activities_pdf, name="export_activities_pdf"),
+    path("export/full-report/", views.export_full_report, name="export_full_report"),
 ]
