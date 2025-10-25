@@ -1,0 +1,108 @@
+{% extends "sidebar.html" %} {% load static %} {% block content %}
+<link rel="stylesheet" href="{% static 'CSS/chatbot.css' %}" />
+<div class="chatbot-container">
+  <div class="chat-header">
+    <h3><i class="fas fa-robot"></i> Kidlink AI Assistant</h3>
+    <button id="minimize-btn"><i class="fas fa-minus"></i></button>
+  </div>
+
+  <div class="chat-messages" id="chatMessages">
+    <div class="message bot">
+      <div class="message-content">
+        👋 Hello! I'm your AI assistant for KidLink. I can help you with
+        questions about youth management, activities, institutes, and more. How
+        can I assist you today?
+      </div>
+    </div>
+  </div>
+
+  <div class="chat-input">
+    <input
+      type="text"
+      id="messageInput"
+      placeholder="Type your message..."
+      autocomplete="off"
+    />
+    <button id="sendBtn"><i class="fas fa-paper-plane"></i></button>
+  </div>
+</div>
+<script>
+  document.getElementById("sendBtn").addEventListener("click", sendMessage);
+  document
+    .getElementById("messageInput")
+    .addEventListener("keypress", function (e) {
+      if (e.key === "Enter") sendMessage();
+    });
+
+  function sendMessage() {
+    const input = document.getElementById("messageInput");
+    const message = input.value.trim();
+
+    if (!message) return;
+
+    // Add user message to chat
+    addMessage(message, "user");
+    input.value = "";
+
+    // Show loading indicator
+    const loadingId = addMessage("Thinking...", "bot loading");
+
+    // Send to backend
+    fetch("/chat/api/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRFToken": "{{ csrf_token }}",
+      },
+      body: JSON.stringify({ message: message }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        removeMessage(loadingId);
+        if (data.error) {
+          addMessage("Sorry, an error occurred: " + data.error, "bot error");
+        } else {
+          addMessage(data.response, "bot");
+        }
+      })
+      .catch((error) => {
+        removeMessage(loadingId);
+        addMessage(
+          "Sorry, I encountered an error. Please try again.",
+          "bot error"
+        );
+        console.error("Error:", error);
+      });
+  }
+
+  function addMessage(text, type) {
+    const messagesDiv = document.getElementById("chatMessages");
+    const messageDiv = document.createElement("div");
+    messageDiv.className = `message ${type}`;
+    messageDiv.innerHTML = `<div class="message-content">${escapeHtml(
+      text
+    )}</div>`;
+    messagesDiv.appendChild(messageDiv);
+    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    return messageDiv;
+  }
+
+  function removeMessage(messageDiv) {
+    messageDiv.remove();
+  }
+
+  function escapeHtml(text) {
+    const map = {
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#039;",
+    };
+    return text.replace(/[&<>"']/g, function (m) {
+      return map[m];
+    });
+  }
+</script>
+
+{% endblock %}

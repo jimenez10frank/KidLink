@@ -91,6 +91,11 @@
             <i class="fas fa-users"></i> Youth Institutes
           </a>
         </li>
+        <li class="{% if request.path == '/chat' %}active{% endif %}">
+          <a href="{% url 'chatbot' %}">
+            <i class="fas fa-robot"></i> AI Assistant
+          </a>
+        </li>
       </ul>
 
       <ul class="sidebar-menu bottom">
