@@ -1,26 +1,56 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Update Institute</title>
-  {% load static %}
-  <link rel="stylesheet" href="{% static 'CSS/form.css' %}"> 
-</head>
-<body>
+{% extends "sidebar.html" %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'CSS/form.css' %}" />
+<link rel="stylesheet" href="{% static 'CSS/scrollbar.css' %}" />
 
-  <div class="form-container">
-    <div class="rightPart">
+<div class="form-container">
+  <header class="form-header">
+    <!-- institute icon -->
+    <svg
+      class="icon-header"
+      viewBox="0 0 24 24"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <path
+        d="M3 10l9-7 9 7v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V10zM9 22V12h6v10"
+      />
+    </svg>
+
+    <div class="title-wrap">
       <h1>Institute Form</h1>
-      <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Save</button>
-      </form>
-
-      <a href="{% url 'institute_list' %}" class="aLink">← Back to list</a>
+      <p class="subtitle">
+        Add or update institute details — clean, consistent, and responsive.
+      </p>
     </div>
-  </div>
-  
-</body>
-</html>
+  </header>
+
+  <form method="post" class="base-form" novalidate>
+    {% csrf_token %}
+    <div class="form-grid">
+      {{ form.as_p }}
+    </div>
+
+    <div class="form-actions">
+      <button type="submit" class="btn btn-primary">
+        <!-- save icon -->
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path
+            d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2zM17 3v5h5"
+          />
+        </svg>
+        Save
+      </button>
+
+      <a href="{% url 'institute_list' %}" class="btn btn-ghost" title="Back to list">
+        <!-- back icon -->
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M15 18l-6-6 6-6" />
+        </svg>
+        Back to list
+      </a>
+    </div>
+  </form>
+</div>
+{% endblock content %}
