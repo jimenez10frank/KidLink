@@ -222,16 +222,15 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 📸 Screenshots
 
 ### Dashboard
-![Dashboard](<img width="1920" height="1080" alt="Dashboard" src="https://github.com/user-attachments/assets/fbde9ed1-ac40-4d20-849e-e546b521d8a1" />)
+<img width="1920" height="1080" alt="Dashboard" src="https://github.com/user-attachments/assets/33bb1290-cc54-4883-b455-02641de55b3d" />
 
 ### Youth Management
-![Youth List](<img width="1920" height="1080" alt="YouthActivity" src="https://github.com/user-attachments/assets/b010939d-a430-41e9-920d-ab63ca79d3e0" />)
+<img width="1920" height="1080" alt="YouthActivity" src="https://github.com/user-attachments/assets/b010939d-a430-41e9-920d-ab63ca79d3e0" />
 
 ### AI Chatbot
-![Chatbot](<img width="1920" height="1080" alt="AiAssistant" src="https://github.com/user-attachments/assets/cb62e79f-15ed-459f-990b-9cc1f63a0da5" />)
+<img width="1920" height="1080" alt="AiAssistant" src="https://github.com/user-attachments/assets/cb62e79f-15ed-459f-990b-9cc1f63a0da5" />
 
 ### Youth Institutes
-![Activities](<img width="1920" height="1080" alt="YouthInstitute" src="https://github.com/user-attachments/assets/962e7ee0-6ce9-4417-aec3-4b18cf0d502f" />)
-
+<img width="1920" height="1080" alt="YouthInstitute" src="https://github.com/user-attachments/assets/962e7ee0-6ce9-4417-aec3-4b18cf0d502f" />
 
 ---
