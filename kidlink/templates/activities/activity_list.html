@@ -36,8 +36,8 @@
           <td data-label="Start">{{ activity.start_date }}</td>
           <td data-label="End">{{ activity.end_date }}</td>
           <td data-label="Actions" class="actions">
-            <a href="#" class="btn edit"><i class="fas fa-edit"></i></a>
-            <a href="#" class="btn delete"><i class="fas fa-trash"></i></a>
+            <a href="{% url 'update_activity' activity.pk %}" class="btn edit"><i class="fas fa-edit"></i></a>
+            <a href="{% url 'delete_activity' activity.pk %}" class="btn delete"><i class="fas fa-trash"></i></a>
           </td>
         </tr>
         {% endfor %}
