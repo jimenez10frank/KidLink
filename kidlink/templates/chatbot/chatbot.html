@@ -27,6 +27,24 @@
   </div>
 </div>
 <script>
+  // Get CSRF token from cookie
+  function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== "") {
+      const cookies = document.cookie.split(";");
+      for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].trim();
+        if (cookie.substring(0, name.length + 1) === name + "=") {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
+        }
+      }
+    }
+    return cookieValue;
+  }
+
+  const csrftoken = getCookie("csrftoken");
+
   document.getElementById("sendBtn").addEventListener("click", sendMessage);
   document
     .getElementById("messageInput")
@@ -40,6 +58,15 @@
 
     if (!message) return;
 
+    // Validate message length
+    if (message.length > 500) {
+      addMessage(
+        "Message too long. Please keep it under 500 characters.",
+        "bot error"
+      );
+      return;
+    }
+
     // Add user message to chat
     addMessage(message, "user");
     input.value = "";
@@ -52,11 +79,18 @@
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "X-CSRFToken": "{{ csrf_token }}",
+        "X-CSRFToken": csrftoken,
       },
       body: JSON.stringify({ message: message }),
     })
-      .then((response) => response.json())
+      .then((response) => {
+        if (!response.ok) {
+          return response.json().then((err) => {
+            throw new Error(err.error || "Server error");
+          });
+        }
+        return response.json();
+      })
       .then((data) => {
         removeMessage(loadingId);
         if (data.error) {
@@ -68,7 +102,7 @@
       .catch((error) => {
         removeMessage(loadingId);
         addMessage(
-          "Sorry, I encountered an error. Please try again.",
+          "Sorry, I encountered an error: " + error.message,
           "bot error"
         );
         console.error("Error:", error);

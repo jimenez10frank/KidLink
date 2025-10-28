@@ -1,28 +1,74 @@
 from django.shortcuts import render
 from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
+from django.views.decorators.cache import cache_page
 import json
 from openai import OpenAI
 import os
 from django.contrib.auth.decorators import login_required
+from functools import wraps
+from time import time
+
+# Simple rate limiter (stores last request time per user)
+_rate_limit_cache = {}
+
+def rate_limit(max_requests=10, window=60):
+    """Rate limiter: max_requests per window seconds"""
+    def decorator(func):
+        @wraps(func)
+        def wrapper(request, *args, **kwargs):
+            user_id = request.user.id if request.user.is_authenticated else request.META.get('REMOTE_ADDR')
+            now = time()
+            
+            if user_id not in _rate_limit_cache:
+                _rate_limit_cache[user_id] = []
+            
+            # Remove old requests outside the window
+            _rate_limit_cache[user_id] = [t for t in _rate_limit_cache[user_id] if now - t < window]
+            
+            if len(_rate_limit_cache[user_id]) >= max_requests:
+                return JsonResponse({
+                    'error': f'Rate limit exceeded. Maximum {max_requests} requests per {window} seconds.'
+                }, status=429)
+            
+            _rate_limit_cache[user_id].append(now)
+            return func(request, *args, **kwargs)
+        return wrapper
+    return decorator
 
 @login_required(login_url='admin_login')
 def chatbot_view(request):
     """Render the chatbot Page."""
     return render(request, 'chatbot/chatbot.html')
 
-@csrf_exempt
-@require_http_methods(["POST"])
 @login_required(login_url='admin_login')
+@require_http_methods(["POST"])
+@rate_limit(max_requests=10, window=60)  # 10 requests per minute
 def chat_api(request):
     """Handle chat messages via AJAX."""
     try:
         data = json.loads(request.body)
-        user_message = data.get('message', '')
+        user_message = data.get('message', '').strip()
+        
+        # Validate input
+        if not user_message:
+            return JsonResponse({'error': 'Message cannot be empty.'}, status=400)
+        
+        if len(user_message) > 500:
+            return JsonResponse({'error': 'Message too long. Maximum 500 characters.'}, status=400)
+        
+        # Check for API key
+        api_key = os.getenv('OPENAI_API_KEY')
+        if not api_key:
+            return JsonResponse({'error': 'OpenAI API key not configured.'}, status=500)
+        
+        # Check for API key
+        api_key = os.getenv('OPENAI_API_KEY')
+        if not api_key:
+            return JsonResponse({'error': 'OpenAI API key not configured.'}, status=500)
         
         # Initialize OpenAI client
-        client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
+        client = OpenAI(api_key=api_key)
         
         # Enhanced system prompt with strict guidelines
         system_prompt = """You are an AI assistant for KidLink, a youth management system. Your purpose is to help administrators manage:

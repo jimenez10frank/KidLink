@@ -36,3 +36,6 @@ staticfiles/
 
 # Media uploads (optional, if you have a media folder)
 media/
+.env
+*.pyc
+db.sqlite3
